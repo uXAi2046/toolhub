@@ -29,112 +29,118 @@
 
       <section class="grid gap-6 grid-cols-1">
         <div class="bg-white shadow-sm ring-1 ring-slate-900/5 rounded-xl">
-        <div class="p-6">
-          <div class="flex items-start justify-between gap-4">
-            <div>
-              <h2 class="text-lg font-semibold">时间戳 → 北京时间</h2>
-              <p class="mt-1 text-sm text-slate-600">输入 Unix 时间戳，自动识别秒/毫秒，并输出北京时间、星期、时区等信息。</p>
-            </div>
-            <button id="btnNowTs" class="shrink-0 inline-flex items-center rounded-lg bg-slate-900 px-3 py-2 text-sm font-medium text-white hover:bg-slate-800">现在</button>
-          </div>
+          <div class="p-6 grid lg:grid-cols-12 gap-8">
+            <!-- 左侧：功能输入区 (41%) -->
+            <div class="lg:col-span-5 flex flex-col gap-6">
+              <div class="flex items-start justify-between gap-4">
+                <div>
+                  <h2 class="text-lg font-semibold">时间戳 → 北京时间</h2>
+                  <p class="mt-1 text-sm text-slate-600">输入 Unix 时间戳，自动识别秒/毫秒，并输出北京时间、星期、时区等信息。</p>
+                </div>
+                <button id="btnNowTs" class="shrink-0 inline-flex items-center rounded-lg bg-slate-900 px-3 py-2 text-sm font-medium text-white hover:bg-slate-800">现在</button>
+              </div>
 
-          <div class="mt-5 grid gap-4">
-            <div class="grid gap-2">
-              <div class="flex items-center justify-between gap-3">
-                <label for="tsInput" class="text-sm font-medium text-slate-700">Unix 时间戳</label>
-                <div class="flex flex-wrap items-center gap-2 text-xs text-slate-600">
-                  <label class="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2 py-1">
-                    <input class="unit-radio" type="radio" name="tsUnit" value="auto" checked />
-                    <span>自动</span>
-                  </label>
-                  <label class="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2 py-1">
-                    <input class="unit-radio" type="radio" name="tsUnit" value="s" />
-                    <span>秒</span>
-                  </label>
-                  <label class="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2 py-1">
-                    <input class="unit-radio" type="radio" name="tsUnit" value="ms" />
-                    <span>毫秒</span>
-                  </label>
-                </div>
-              </div>
-              <div class="flex flex-col gap-2 sm:flex-row">
-                <input id="tsInput" inputmode="numeric" class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-slate-400" placeholder="例如：1735526400000 或 1735526400" />
-                <button id="btnCopyTs" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">复制</button>
-              </div>
-              <p id="tsHint" class="text-xs text-slate-500"></p>
-            </div>
-
-            <div class="grid gap-3 sm:grid-cols-2">
-              <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
-                <div class="flex items-center justify-between gap-2">
-                  <div class="text-xs font-medium text-slate-600">北京时间（Asia/Shanghai）</div>
-                  <button data-copy="bj" class="copy-out inline-flex items-center rounded-md bg-slate-900 px-2 py-1 text-xs font-medium text-white hover:bg-slate-800">复制</button>
-                </div>
-                <div id="outBj" class="mt-2 font-mono text-sm text-slate-900">-</div>
-                <div id="outWeek" class="mt-1 text-xs text-slate-600">-</div>
-              </div>
-              <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
-                <div class="flex items-center justify-between gap-2">
-                  <div class="text-xs font-medium text-slate-600">Unix 时间戳</div>
-                  <div class="flex items-center gap-2">
-                    <button data-copy="ts_s" class="copy-out inline-flex items-center rounded-md border border-slate-200 bg-white px-2 py-1 text-xs font-medium text-slate-700 hover:bg-slate-100">秒</button>
-                    <button data-copy="ts_ms" class="copy-out inline-flex items-center rounded-md bg-slate-900 px-2 py-1 text-xs font-medium text-white hover:bg-slate-800">毫秒</button>
+              <div class="grid gap-2">
+                <div class="flex items-center justify-between gap-3">
+                  <label for="tsInput" class="text-sm font-medium text-slate-700">Unix 时间戳</label>
+                  <div class="flex flex-wrap items-center gap-2 text-xs text-slate-600">
+                    <label class="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2 py-1">
+                      <input class="unit-radio" type="radio" name="tsUnit" value="auto" checked />
+                      <span>自动</span>
+                    </label>
+                    <label class="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2 py-1">
+                      <input class="unit-radio" type="radio" name="tsUnit" value="s" />
+                      <span>秒</span>
+                    </label>
+                    <label class="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2 py-1">
+                      <input class="unit-radio" type="radio" name="tsUnit" value="ms" />
+                      <span>毫秒</span>
+                    </label>
                   </div>
                 </div>
-                <div class="mt-2 grid gap-1 text-sm">
-                  <div class="flex items-center justify-between gap-3">
-                    <span class="text-xs text-slate-600">秒</span>
-                    <span id="outTsS" class="font-mono text-slate-900">-</span>
-                  </div>
-                  <div class="flex items-center justify-between gap-3">
-                    <span class="text-xs text-slate-600">毫秒</span>
-                    <span id="outTsMs" class="font-mono text-slate-900">-</span>
-                  </div>
+                <div class="flex flex-col gap-2">
+                  <input id="tsInput" inputmode="numeric" class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-slate-400" placeholder="例如：1735526400000 或 1735526400" />
+                  <button id="btnCopyTs" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">复制</button>
                 </div>
+                <p id="tsHint" class="text-xs text-slate-500"></p>
               </div>
             </div>
 
-            <div class="rounded-xl border border-slate-200 bg-white">
-              <div class="flex items-center justify-between gap-3 border-b border-slate-200 px-4 py-3">
-                <div class="text-sm font-semibold text-slate-800">更多信息</div>
-                <button data-copy="all" class="copy-out inline-flex items-center rounded-md border border-slate-200 bg-white px-2 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50">复制全部</button>
+            <!-- 右侧：结果展示区 (58%) -->
+            <div class="lg:col-span-7 flex flex-col gap-4">
+              <div class="grid gap-3 sm:grid-cols-2">
+                <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                  <div class="flex items-center justify-between gap-2">
+                    <div class="text-xs font-medium text-slate-600">北京时间（Asia/Shanghai）</div>
+                    <button data-copy="bj" class="copy-out inline-flex items-center rounded-md bg-slate-900 px-2 py-1 text-xs font-medium text-white hover:bg-slate-800">复制</button>
+                  </div>
+                  <div id="outBj" class="mt-2 font-mono text-sm text-slate-900">-</div>
+                  <div id="outWeek" class="mt-1 text-xs text-slate-600">-</div>
+                </div>
+                <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                  <div class="flex items-center justify-between gap-2">
+                    <div class="text-xs font-medium text-slate-600">Unix 时间戳</div>
+                    <div class="flex items-center gap-2">
+                      <button data-copy="ts_s" class="copy-out inline-flex items-center rounded-md border border-slate-200 bg-white px-2 py-1 text-xs font-medium text-slate-700 hover:bg-slate-100">秒</button>
+                      <button data-copy="ts_ms" class="copy-out inline-flex items-center rounded-md bg-slate-900 px-2 py-1 text-xs font-medium text-white hover:bg-slate-800">毫秒</button>
+                    </div>
+                  </div>
+                  <div class="mt-2 grid gap-1 text-sm">
+                    <div class="flex items-center justify-between gap-3">
+                      <span class="text-xs text-slate-600">秒</span>
+                      <span id="outTsS" class="font-mono text-slate-900">-</span>
+                    </div>
+                    <div class="flex items-center justify-between gap-3">
+                      <span class="text-xs text-slate-600">毫秒</span>
+                      <span id="outTsMs" class="font-mono text-slate-900">-</span>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div class="p-4">
-                <dl class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                  <div>
-                    <dt class="text-xs font-medium text-slate-600">时区</dt>
-                    <dd id="outTz" class="mt-1 font-mono text-sm">-</dd>
-                  </div>
-                  <div>
-                    <dt class="text-xs font-medium text-slate-600">UTC 时间</dt>
-                    <dd id="outUtc" class="mt-1 font-mono text-sm">-</dd>
-                  </div>
-                  <div>
-                    <dt class="text-xs font-medium text-slate-600">ISO（UTC）</dt>
-                    <dd id="outIso" class="mt-1 font-mono text-sm break-all">-</dd>
-                  </div>
-                  <div>
-                    <dt class="text-xs font-medium text-slate-600">本地时间</dt>
-                    <dd id="outLocal" class="mt-1 font-mono text-sm">-</dd>
-                  </div>
-                </dl>
+
+              <div class="rounded-xl border border-slate-200 bg-white">
+                <div class="flex items-center justify-between gap-3 border-b border-slate-200 px-4 py-3">
+                  <div class="text-sm font-semibold text-slate-800">更多信息</div>
+                  <button data-copy="all" class="copy-out inline-flex items-center rounded-md border border-slate-200 bg-white px-2 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50">复制全部</button>
+                </div>
+                <div class="p-4">
+                  <dl class="grid gap-3 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
+                    <div>
+                      <dt class="text-xs font-medium text-slate-600">时区</dt>
+                      <dd id="outTz" class="mt-1 font-mono text-sm">-</dd>
+                    </div>
+                    <div>
+                      <dt class="text-xs font-medium text-slate-600">UTC 时间</dt>
+                      <dd id="outUtc" class="mt-1 font-mono text-sm">-</dd>
+                    </div>
+                    <div>
+                      <dt class="text-xs font-medium text-slate-600">ISO（UTC）</dt>
+                      <dd id="outIso" class="mt-1 font-mono text-sm break-all">-</dd>
+                    </div>
+                    <div>
+                      <dt class="text-xs font-medium text-slate-600">本地时间</dt>
+                      <dd id="outLocal" class="mt-1 font-mono text-sm">-</dd>
+                    </div>
+                  </dl>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-        <div class="bg-white shadow-sm ring-1 ring-slate-900/5 rounded-xl">
-        <div class="p-6">
-          <div class="flex items-start justify-between gap-4">
-            <div>
-              <h2 class="text-lg font-semibold">日期时间 → Unix 时间戳</h2>
-              <p class="mt-1 text-sm text-slate-600">输入年月日、时分秒与毫秒，按选择的时区换算成 Unix 秒/毫秒时间戳。</p>
+      <div class="bg-white shadow-sm ring-1 ring-slate-900/5 rounded-xl">
+        <div class="p-6 grid lg:grid-cols-12 gap-8">
+          <!-- 左侧：功能输入区 (41%) -->
+          <div class="lg:col-span-5 flex flex-col gap-6">
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <h2 class="text-lg font-semibold">日期时间 → Unix 时间戳</h2>
+                <p class="mt-1 text-sm text-slate-600">输入年月日、时分秒与毫秒，按选择的时区换算成 Unix 秒/毫秒时间戳。</p>
+              </div>
+              <button id="btnNowDt" class="shrink-0 inline-flex items-center rounded-lg bg-slate-900 px-3 py-2 text-sm font-medium text-white hover:bg-slate-800">填入当前时间</button>
             </div>
-            <button id="btnNowDt" class="shrink-0 inline-flex items-center rounded-lg bg-slate-900 px-3 py-2 text-sm font-medium text-white hover:bg-slate-800">填入当前时间</button>
-          </div>
 
-          <div class="mt-5 grid gap-4">
             <div class="grid gap-3 sm:grid-cols-3">
               <div class="grid gap-2">
                 <label for="dateInput" class="text-sm font-medium text-slate-700">日期</label>
@@ -160,6 +166,14 @@
               <p id="dtHint" class="text-xs text-slate-500"></p>
             </div>
 
+            <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <div class="text-xs text-slate-500">提示：粘贴内容到页面任意位置，将自动识别为时间戳或日期。</div>
+              <button id="btnSwap" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">将结果带回上方</button>
+            </div>
+          </div>
+
+          <!-- 右侧：结果展示区 (58%) -->
+          <div class="lg:col-span-7 flex flex-col gap-4">
             <div class="grid gap-3 sm:grid-cols-2">
               <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
                 <div class="flex items-center justify-between gap-2">
@@ -188,11 +202,6 @@
                 <div id="outCheckBj" class="mt-2 font-mono text-sm text-slate-900">-</div>
                 <div class="mt-1 text-xs text-slate-600" id="outCheckIso">-</div>
               </div>
-            </div>
-
-            <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-              <div class="text-xs text-slate-500">提示：粘贴内容到页面任意位置，将自动识别为时间戳或日期。</div>
-              <button id="btnSwap" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">将结果带回上方</button>
             </div>
           </div>
         </div>
