@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>时间戳与日期转换 - ToolHub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-slate-50 text-slate-900 font-sans antialiased">
+  <nav class="flex items-center justify-between px-6 py-4 mb-8 border-b border-slate-200 bg-white/50 backdrop-blur-md sticky top-0 z-50">
+    <a href="https://uxai2046.github.io/toolhub/" class="flex items-center gap-2 text-slate-600 hover:text-slate-900 transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+      <span class="font-medium">Back to ToolHub</span>
+    </a>
+    <div class="text-sm font-semibold text-slate-400">ToolHub Utility</div>
+  </nav>
+
+  <main class="max-w-3xl mx-auto px-4 py-12">
+    <header class="mb-8">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-900">时间戳与日期转换</h1>
+          <p class="mt-2 text-sm sm:text-base text-slate-600">支持 Unix 秒/毫秒与北京时间（UTC+08:00）日期互转。</p>
+        </div>
+        <div class="inline-flex items-center gap-2 self-start rounded-full border border-slate-200 bg-white px-3 py-1 text-xs text-slate-600">
+          <span class="inline-block h-2 w-2 rounded-full bg-slate-900"></span>
+          <span class="font-medium">毫秒级</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="grid gap-6">
+      <div class="bg-white shadow-sm ring-1 ring-slate-900/5 rounded-xl">
+        <div class="p-6">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <h2 class="text-lg font-semibold">时间戳 → 北京时间</h2>
+              <p class="mt-1 text-sm text-slate-600">输入 Unix 时间戳，自动识别秒/毫秒，并输出北京时间、星期、时区等信息。</p>
+            </div>
+            <button id="btnNowTs" class="shrink-0 inline-flex items-center rounded-lg bg-slate-900 px-3 py-2 text-sm font-medium text-white hover:bg-slate-800">现在</button>
+          </div>
+
+          <div class="mt-5 grid gap-4">
+            <div class="grid gap-2">
+              <div class="flex items-center justify-between gap-3">
+                <label for="tsInput" class="text-sm font-medium text-slate-700">Unix 时间戳</label>
+                <div class="flex flex-wrap items-center gap-2 text-xs text-slate-600">
+                  <label class="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2 py-1">
+                    <input class="unit-radio" type="radio" name="tsUnit" value="auto" checked />
+                    <span>自动</span>
+                  </label>
+                  <label class="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2 py-1">
+                    <input class="unit-radio" type="radio" name="tsUnit" value="s" />
+                    <span>秒</span>
+                  </label>
+                  <label class="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2 py-1">
+                    <input class="unit-radio" type="radio" name="tsUnit" value="ms" />
+                    <span>毫秒</span>
+                  </label>
+                </div>
+              </div>
+              <div class="flex flex-col gap-2 sm:flex-row">
+                <input id="tsInput" inputmode="numeric" class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-slate-400" placeholder="例如：1735526400000 或 1735526400" />
+                <button id="btnCopyTs" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">复制</button>
+              </div>
+              <p id="tsHint" class="text-xs text-slate-500"></p>
+            </div>
+
+            <div class="grid gap-3 sm:grid-cols-2">
+              <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                <div class="flex items-center justify-between gap-2">
+                  <div class="text-xs font-medium text-slate-600">北京时间（Asia/Shanghai）</div>
+                  <button data-copy="bj" class="copy-out inline-flex items-center rounded-md bg-slate-900 px-2 py-1 text-xs font-medium text-white hover:bg-slate-800">复制</button>
+                </div>
+                <div id="outBj" class="mt-2 font-mono text-sm text-slate-900">-</div>
+                <div id="outWeek" class="mt-1 text-xs text-slate-600">-</div>
+              </div>
+              <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                <div class="flex items-center justify-between gap-2">
+                  <div class="text-xs font-medium text-slate-600">Unix 时间戳</div>
+                  <div class="flex items-center gap-2">
+                    <button data-copy="ts_s" class="copy-out inline-flex items-center rounded-md border border-slate-200 bg-white px-2 py-1 text-xs font-medium text-slate-700 hover:bg-slate-100">秒</button>
+                    <button data-copy="ts_ms" class="copy-out inline-flex items-center rounded-md bg-slate-900 px-2 py-1 text-xs font-medium text-white hover:bg-slate-800">毫秒</button>
+                  </div>
+                </div>
+                <div class="mt-2 grid gap-1 text-sm">
+                  <div class="flex items-center justify-between gap-3">
+                    <span class="text-xs text-slate-600">秒</span>
+                    <span id="outTsS" class="font-mono text-slate-900">-</span>
+                  </div>
+                  <div class="flex items-center justify-between gap-3">
+                    <span class="text-xs text-slate-600">毫秒</span>
+                    <span id="outTsMs" class="font-mono text-slate-900">-</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="rounded-xl border border-slate-200 bg-white">
+              <div class="flex items-center justify-between gap-3 border-b border-slate-200 px-4 py-3">
+                <div class="text-sm font-semibold text-slate-800">更多信息</div>
+                <button data-copy="all" class="copy-out inline-flex items-center rounded-md border border-slate-200 bg-white px-2 py-1 text-xs font-medium text-slate-700 hover:bg-slate-50">复制全部</button>
+              </div>
+              <div class="p-4">
+                <dl class="grid gap-3 sm:grid-cols-2">
+                  <div>
+                    <dt class="text-xs font-medium text-slate-600">时区</dt>
+                    <dd id="outTz" class="mt-1 font-mono text-sm">-</dd>
+                  </div>
+                  <div>
+                    <dt class="text-xs font-medium text-slate-600">UTC 时间</dt>
+                    <dd id="outUtc" class="mt-1 font-mono text-sm">-</dd>
+                  </div>
+                  <div>
+                    <dt class="text-xs font-medium text-slate-600">ISO（UTC）</dt>
+                    <dd id="outIso" class="mt-1 font-mono text-sm break-all">-</dd>
+                  </div>
+                  <div>
+                    <dt class="text-xs font-medium text-slate-600">本地时间</dt>
+                    <dd id="outLocal" class="mt-1 font-mono text-sm">-</dd>
+                  </div>
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white shadow-sm ring-1 ring-slate-900/5 rounded-xl">
+        <div class="p-6">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <h2 class="text-lg font-semibold">日期时间 → Unix 时间戳</h2>
+              <p class="mt-1 text-sm text-slate-600">输入年月日、时分秒与毫秒，按选择的时区换算成 Unix 秒/毫秒时间戳。</p>
+            </div>
+            <button id="btnNowDt" class="shrink-0 inline-flex items-center rounded-lg bg-slate-900 px-3 py-2 text-sm font-medium text-white hover:bg-slate-800">填入当前时间</button>
+          </div>
+
+          <div class="mt-5 grid gap-4">
+            <div class="grid gap-3 sm:grid-cols-3">
+              <div class="grid gap-2">
+                <label for="dateInput" class="text-sm font-medium text-slate-700">日期</label>
+                <input id="dateInput" type="date" class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-slate-400" />
+              </div>
+              <div class="grid gap-2">
+                <label for="timeInput" class="text-sm font-medium text-slate-700">时间</label>
+                <input id="timeInput" type="time" step="1" class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-slate-400" />
+              </div>
+              <div class="grid gap-2">
+                <label for="msInput" class="text-sm font-medium text-slate-700">毫秒</label>
+                <input id="msInput" type="number" min="0" max="999" inputmode="numeric" class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-slate-400" placeholder="0~999" />
+              </div>
+            </div>
+
+            <div class="grid gap-2">
+              <label for="tzSelect" class="text-sm font-medium text-slate-700">输入时区</label>
+              <select id="tzSelect" class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-slate-400">
+                <option value="bj" selected>北京时间（Asia/Shanghai, UTC+08:00）</option>
+                <option value="local">本地时区</option>
+                <option value="utc">UTC</option>
+              </select>
+              <p id="dtHint" class="text-xs text-slate-500"></p>
+            </div>
+
+            <div class="grid gap-3 sm:grid-cols-2">
+              <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                <div class="flex items-center justify-between gap-2">
+                  <div class="text-xs font-medium text-slate-600">输出（Unix）</div>
+                  <div class="flex items-center gap-2">
+                    <button data-copy="out_s" class="copy-out inline-flex items-center rounded-md border border-slate-200 bg-white px-2 py-1 text-xs font-medium text-slate-700 hover:bg-slate-100">秒</button>
+                    <button data-copy="out_ms" class="copy-out inline-flex items-center rounded-md bg-slate-900 px-2 py-1 text-xs font-medium text-white hover:bg-slate-800">毫秒</button>
+                  </div>
+                </div>
+                <div class="mt-2 grid gap-1 text-sm">
+                  <div class="flex items-center justify-between gap-3">
+                    <span class="text-xs text-slate-600">秒</span>
+                    <span id="outFromDtS" class="font-mono text-slate-900">-</span>
+                  </div>
+                  <div class="flex items-center justify-between gap-3">
+                    <span class="text-xs text-slate-600">毫秒</span>
+                    <span id="outFromDtMs" class="font-mono text-slate-900">-</span>
+                  </div>
+                </div>
+              </div>
+              <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                <div class="flex items-center justify-between gap-2">
+                  <div class="text-xs font-medium text-slate-600">校验（北京时间）</div>
+                  <button data-copy="check_bj" class="copy-out inline-flex items-center rounded-md bg-slate-900 px-2 py-1 text-xs font-medium text-white hover:bg-slate-800">复制</button>
+                </div>
+                <div id="outCheckBj" class="mt-2 font-mono text-sm text-slate-900">-</div>
+                <div class="mt-1 text-xs text-slate-600" id="outCheckIso">-</div>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <div class="text-xs text-slate-500">提示：粘贴内容到页面任意位置，将自动识别为时间戳或日期。</div>
+              <button id="btnSwap" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">将结果带回上方</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="pointer-events-none fixed inset-x-0 bottom-6 z-50 flex justify-center px-4 opacity-0 transition-opacity duration-200">
+    <div class="pointer-events-auto max-w-sm rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-lg">
+      <div class="flex items-start gap-3">
+        <div class="mt-0.5 h-2.5 w-2.5 shrink-0 rounded-full bg-slate-900"></div>
+        <div>
+          <div id="toastTitle" class="text-sm font-semibold text-slate-900">已复制</div>
+          <div id="toastDesc" class="mt-0.5 text-xs text-slate-600">内容已复制到剪贴板。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const els = {
+      tsInput: document.getElementById('tsInput'),
+      tsHint: document.getElementById('tsHint'),
+      unitRadios: Array.from(document.querySelectorAll('.unit-radio')),
+      btnNowTs: document.getElementById('btnNowTs'),
+      btnCopyTs: document.getElementById('btnCopyTs'),
+
+      outBj: document.getElementById('outBj'),
+      outWeek: document.getElementById('outWeek'),
+      outTz: document.getElementById('outTz'),
+      outUtc: document.getElementById('outUtc'),
+      outIso: document.getElementById('outIso'),
+      outLocal: document.getElementById('outLocal'),
+      outTsS: document.getElementById('outTsS'),
+      outTsMs: document.getElementById('outTsMs'),
+
+      dateInput: document.getElementById('dateInput'),
+      timeInput: document.getElementById('timeInput'),
+      msInput: document.getElementById('msInput'),
+      tzSelect: document.getElementById('tzSelect'),
+      dtHint: document.getElementById('dtHint'),
+      btnNowDt: document.getElementById('btnNowDt'),
+      btnSwap: document.getElementById('btnSwap'),
+
+      outFromDtS: document.getElementById('outFromDtS'),
+      outFromDtMs: document.getElementById('outFromDtMs'),
+      outCheckBj: document.getElementById('outCheckBj'),
+      outCheckIso: document.getElementById('outCheckIso'),
+
+      toast: document.getElementById('toast'),
+      toastTitle: document.getElementById('toastTitle'),
+      toastDesc: document.getElementById('toastDesc')
+    };
+
+    const BEIJING_TZ = 'Asia/Shanghai';
+    const BEIJING_OFFSET_MS = 8 * 60 * 60 * 1000;
+    let toastTimer = null;
+
+    function pad2(n) {
+      return String(n).padStart(2, '0');
+    }
+
+    function pad3(n) {
+      return String(n).padStart(3, '0');
+    }
+
+    function getSelectedTsUnit() {
+      const checked = els.unitRadios.find(r => r.checked);
+      return checked ? checked.value : 'auto';
+    }
+
+    function safeInt(v) {
+      if (typeof v !== 'string') v = String(v ?? '');
+      const cleaned = v.trim().replace(/,/g, '');
+      if (!cleaned) return null;
+      if (!/^[+-]?\d+(\.\d+)?$/.test(cleaned)) return null;
+      const num = Number(cleaned);
+      if (!Number.isFinite(num)) return null;
+      return num;
+    }
+
+    function guessTimestampUnit(tsNumber, rawStr) {
+      const s = String(rawStr ?? '').trim().replace(/,/g, '').replace(/^\+/, '');
+      if (/^\d{13,}$/.test(s)) return 'ms';
+      if (/^\d{10}$/.test(s)) return 's';
+      const abs = Math.abs(tsNumber);
+      if (abs >= 1e12) return 'ms';
+      if (abs >= 1e9) return 's';
+      return 'ms';
+    }
+
+    function parseTimestampToMs() {
+      const raw = els.tsInput.value;
+      const ts = safeInt(raw);
+      if (ts === null) return { ok: false, reason: '请输入有效数字。' };
+
+      const unit = getSelectedTsUnit();
+      const finalUnit = unit === 'auto' ? guessTimestampUnit(ts, raw) : unit;
+      const ms = finalUnit === 's' ? Math.round(ts * 1000) : Math.round(ts);
+      if (!Number.isSafeInteger(ms)) return { ok: false, reason: '时间戳超出安全整数范围。' };
+
+      const d = new Date(ms);
+      if (Number.isNaN(d.getTime())) return { ok: false, reason: '无法解析该时间戳。' };
+      return { ok: true, ms, unit: finalUnit };
+    }
+
+    function formatInTimeZone(date, timeZone) {
+      const parts = new Intl.DateTimeFormat('zh-CN', {
+        timeZone,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      }).formatToParts(date);
+
+      const get = (type) => parts.find(p => p.type === type)?.value;
+      const y = get('year');
+      const mo = get('month');
+      const da = get('day');
+      const h = get('hour');
+      const mi = get('minute');
+      const se = get('second');
+      const ms = pad3(date.getMilliseconds());
+      return `${y}-${mo}-${da} ${h}:${mi}:${se}.${ms}`;
+    }
+
+    function formatWeekday(date, timeZone) {
+      return new Intl.DateTimeFormat('zh-CN', { timeZone, weekday: 'long' }).format(date);
+    }
+
+    function showToast(title, desc) {
+      els.toastTitle.textContent = title;
+      els.toastDesc.textContent = desc;
+      els.toast.classList.remove('opacity-0');
+      els.toast.classList.add('opacity-100');
+      if (toastTimer) window.clearTimeout(toastTimer);
+      toastTimer = window.setTimeout(() => {
+        els.toast.classList.add('opacity-0');
+        els.toast.classList.remove('opacity-100');
+      }, 1800);
+    }
+
+    async function copyText(text, label) {
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast('已复制', label);
+      } catch {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        showToast('已复制', label);
+      }
+    }
+
+    function setTsOutputsEmpty(reason) {
+      els.tsHint.textContent = reason || '';
+      els.outBj.textContent = '-';
+      els.outWeek.textContent = '-';
+      els.outTz.textContent = '-';
+      els.outUtc.textContent = '-';
+      els.outIso.textContent = '-';
+      els.outLocal.textContent = '-';
+      els.outTsS.textContent = '-';
+      els.outTsMs.textContent = '-';
+    }
+
+    function updateTsOutputs() {
+      const raw = els.tsInput.value.trim();
+      if (!raw) {
+        setTsOutputsEmpty('');
+        return;
+      }
+
+      const parsed = parseTimestampToMs();
+      if (!parsed.ok) {
+        setTsOutputsEmpty(parsed.reason);
+        return;
+      }
+
+      const d = new Date(parsed.ms);
+      const unitLabel = parsed.unit === 's' ? '秒' : '毫秒';
+      els.tsHint.textContent = `已按「${unitLabel}」解析。`;
+
+      const bj = formatInTimeZone(d, BEIJING_TZ);
+      els.outBj.textContent = bj;
+      els.outWeek.textContent = formatWeekday(d, BEIJING_TZ);
+      els.outTz.textContent = `${BEIJING_TZ} (UTC+08:00)`;
+      els.outUtc.textContent = formatInTimeZone(d, 'UTC');
+      els.outIso.textContent = d.toISOString();
+      els.outLocal.textContent = `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())} ${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}.${pad3(d.getMilliseconds())}`;
+      els.outTsMs.textContent = String(parsed.ms);
+      els.outTsS.textContent = String(Math.floor(parsed.ms / 1000));
+    }
+
+    function parseDateTimeInputs() {
+      const dateStr = els.dateInput.value;
+      const timeStr = els.timeInput.value;
+      const msStr = String(els.msInput.value ?? '').trim();
+      if (!dateStr && !timeStr && !msStr) return { ok: false, reason: '' };
+      if (!dateStr) return { ok: false, reason: '请选择日期。' };
+      if (!timeStr) return { ok: false, reason: '请选择时间。' };
+
+      const [y, m, d] = dateStr.split('-').map(Number);
+      const timeParts = timeStr.split(':').map(Number);
+      const hh = timeParts[0] ?? 0;
+      const mm = timeParts[1] ?? 0;
+      const ss = timeParts[2] ?? 0;
+      const ms = msStr === '' ? 0 : Number(msStr);
+
+      if (![y, m, d, hh, mm, ss, ms].every(Number.isFinite)) return { ok: false, reason: '日期或时间格式不正确。' };
+      if (ms < 0 || ms > 999) return { ok: false, reason: '毫秒需在 0~999。' };
+
+      const tzMode = els.tzSelect.value;
+      let tsMs = null;
+
+      if (tzMode === 'utc') {
+        tsMs = Date.UTC(y, m - 1, d, hh, mm, ss, ms);
+      } else if (tzMode === 'local') {
+        tsMs = new Date(y, m - 1, d, hh, mm, ss, ms).getTime();
+      } else {
+        tsMs = Date.UTC(y, m - 1, d, hh, mm, ss, ms) - BEIJING_OFFSET_MS;
+      }
+
+      if (!Number.isFinite(tsMs)) return { ok: false, reason: '无法计算该时间。' };
+      if (!Number.isSafeInteger(tsMs)) return { ok: false, reason: '结果超出安全整数范围。' };
+      const check = new Date(tsMs);
+      if (Number.isNaN(check.getTime())) return { ok: false, reason: '结果时间无效。' };
+      return { ok: true, tsMs };
+    }
+
+    function setDtOutputsEmpty(reason) {
+      els.dtHint.textContent = reason || '';
+      els.outFromDtS.textContent = '-';
+      els.outFromDtMs.textContent = '-';
+      els.outCheckBj.textContent = '-';
+      els.outCheckIso.textContent = '-';
+    }
+
+    function updateDtOutputs() {
+      const parsed = parseDateTimeInputs();
+      if (!parsed.ok) {
+        setDtOutputsEmpty(parsed.reason);
+        return;
+      }
+
+      const tsMs = parsed.tsMs;
+      els.dtHint.textContent = '';
+      els.outFromDtMs.textContent = String(tsMs);
+      els.outFromDtS.textContent = String(Math.floor(tsMs / 1000));
+
+      const d = new Date(tsMs);
+      els.outCheckBj.textContent = formatInTimeZone(d, BEIJING_TZ);
+      els.outCheckIso.textContent = d.toISOString();
+    }
+
+    function paramsFromState() {
+      const p = new URLSearchParams();
+      const ts = els.tsInput.value.trim();
+      const unit = getSelectedTsUnit();
+      const date = els.dateInput.value;
+      const time = els.timeInput.value;
+      const ms = String(els.msInput.value ?? '').trim();
+      const tz = els.tzSelect.value;
+      if (ts) p.set('ts', ts);
+      if (unit && unit !== 'auto') p.set('unit', unit);
+      if (date) p.set('date', date);
+      if (time) p.set('time', time);
+      if (ms && ms !== '0') p.set('ms', ms);
+      if (tz && tz !== 'bj') p.set('tz', tz);
+      return p;
+    }
+
+    function syncUrl() {
+      const p = paramsFromState();
+      const url = `${location.pathname}${p.toString() ? '?' + p.toString() : ''}${location.hash || ''}`;
+      history.replaceState(null, '', url);
+    }
+
+    function applyUrl() {
+      const p = new URLSearchParams(location.search);
+      const ts = p.get('ts');
+      const unit = p.get('unit');
+      const date = p.get('date');
+      const time = p.get('time');
+      const ms = p.get('ms');
+      const tz = p.get('tz');
+
+      if (ts) els.tsInput.value = ts;
+      if (unit === 's' || unit === 'ms') {
+        els.unitRadios.forEach(r => r.checked = r.value === unit);
+      }
+      if (date) els.dateInput.value = date;
+      if (time) els.timeInput.value = time;
+      if (ms) els.msInput.value = ms;
+      if (tz) els.tzSelect.value = tz;
+    }
+
+    function fillCurrentDateTime() {
+      const now = new Date();
+      const mode = els.tzSelect.value;
+
+      if (mode === 'utc') {
+        const y = now.getUTCFullYear();
+        const m = pad2(now.getUTCMonth() + 1);
+        const d = pad2(now.getUTCDate());
+        const hh = pad2(now.getUTCHours());
+        const mm = pad2(now.getUTCMinutes());
+        const ss = pad2(now.getUTCSeconds());
+        els.dateInput.value = `${y}-${m}-${d}`;
+        els.timeInput.value = `${hh}:${mm}:${ss}`;
+        els.msInput.value = String(now.getUTCMilliseconds());
+        return;
+      }
+
+      if (mode === 'local') {
+        const y = now.getFullYear();
+        const m = pad2(now.getMonth() + 1);
+        const d = pad2(now.getDate());
+        const hh = pad2(now.getHours());
+        const mm = pad2(now.getMinutes());
+        const ss = pad2(now.getSeconds());
+        els.dateInput.value = `${y}-${m}-${d}`;
+        els.timeInput.value = `${hh}:${mm}:${ss}`;
+        els.msInput.value = String(now.getMilliseconds());
+        return;
+      }
+
+      const parts = new Intl.DateTimeFormat('zh-CN', {
+        timeZone: BEIJING_TZ,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+      }).formatToParts(now);
+      const get = (type) => parts.find(p => p.type === type)?.value;
+      els.dateInput.value = `${get('year')}-${get('month')}-${get('day')}`;
+      els.timeInput.value = `${get('hour')}:${get('minute')}:${get('second')}`;
+      els.msInput.value = String(now.getMilliseconds());
+    }
+
+    function normalizePastedText(text) {
+      return String(text ?? '').trim().replace(/\u00A0/g, ' ');
+    }
+
+    function tryApplyPasted(text) {
+      const t = normalizePastedText(text);
+      if (!t) return false;
+
+      if (/^[+-]?[0-9][0-9,]*([.][0-9]+)?$/.test(t)) {
+        els.tsInput.value = t.replace(/,/g, '');
+        updateTsOutputs();
+        syncUrl();
+        showToast('已识别时间戳', '已填入上方时间戳输入框。');
+        return true;
+      }
+
+      const m = t.match(/^(\d{4})[\/-](\d{1,2})[\/-](\d{1,2})(?:[ T](\d{1,2}):(\d{1,2})(?::(\d{1,2}))?(?:[.](\d{1,3}))?)?/);
+      if (m) {
+        const y = m[1];
+        const mo = pad2(Number(m[2]));
+        const da = pad2(Number(m[3]));
+        const hh = pad2(Number(m[4] ?? 0));
+        const mi = pad2(Number(m[5] ?? 0));
+        const ss = pad2(Number(m[6] ?? 0));
+        const ms = m[7] ? String(Number(m[7].padEnd(3, '0'))) : '0';
+        els.dateInput.value = `${y}-${mo}-${da}`;
+        els.timeInput.value = `${hh}:${mi}:${ss}`;
+        els.msInput.value = ms;
+        updateDtOutputs();
+        syncUrl();
+        showToast('已识别日期时间', '已填入下方日期时间输入区。');
+        return true;
+      }
+
+      const d = new Date(t);
+      if (!Number.isNaN(d.getTime())) {
+        els.tsInput.value = String(d.getTime());
+        els.unitRadios.forEach(r => r.checked = r.value === 'ms');
+        updateTsOutputs();
+        syncUrl();
+        showToast('已识别日期字符串', '已按毫秒时间戳填入上方。');
+        return true;
+      }
+
+      return false;
+    }
+
+    function bindEvents() {
+      els.tsInput.addEventListener('input', () => {
+        updateTsOutputs();
+        syncUrl();
+      });
+
+      els.unitRadios.forEach(r => r.addEventListener('change', () => {
+        updateTsOutputs();
+        syncUrl();
+      }));
+
+      els.btnNowTs.addEventListener('click', () => {
+        els.tsInput.value = String(Date.now());
+        els.unitRadios.forEach(r => r.checked = r.value === 'ms');
+        updateTsOutputs();
+        syncUrl();
+        showToast('已填入当前时间', '上方已填入当前毫秒时间戳。');
+      });
+
+      els.btnCopyTs.addEventListener('click', () => {
+        const t = els.tsInput.value.trim();
+        if (!t) return;
+        copyText(t, '已复制输入的时间戳。');
+      });
+
+      document.querySelectorAll('.copy-out').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const key = btn.getAttribute('data-copy');
+          const parsed = parseTimestampToMs();
+          const dtParsed = parseDateTimeInputs();
+
+          if (key === 'bj') {
+            if (!parsed.ok) return;
+            copyText(els.outBj.textContent, '已复制北京时间。');
+            return;
+          }
+          if (key === 'ts_s') {
+            if (!parsed.ok) return;
+            copyText(String(Math.floor(parsed.ms / 1000)), '已复制 Unix 秒时间戳。');
+            return;
+          }
+          if (key === 'ts_ms') {
+            if (!parsed.ok) return;
+            copyText(String(parsed.ms), '已复制 Unix 毫秒时间戳。');
+            return;
+          }
+          if (key === 'all') {
+            if (!parsed.ok) return;
+            const d = new Date(parsed.ms);
+            const payload = [
+              `北京时间: ${formatInTimeZone(d, BEIJING_TZ)} (${formatWeekday(d, BEIJING_TZ)})`,
+              `时区: ${BEIJING_TZ} (UTC+08:00)`,
+              `Unix(秒): ${Math.floor(parsed.ms / 1000)}`,
+              `Unix(毫秒): ${parsed.ms}`,
+              `UTC: ${formatInTimeZone(d, 'UTC')}`,
+              `ISO(UTC): ${d.toISOString()}`,
+              `本地: ${els.outLocal.textContent}`
+            ].join('\n');
+            copyText(payload, '已复制全部信息。');
+            return;
+          }
+
+          if (key === 'out_s') {
+            if (!dtParsed.ok) return;
+            copyText(String(Math.floor(dtParsed.tsMs / 1000)), '已复制输出 Unix 秒时间戳。');
+            return;
+          }
+          if (key === 'out_ms') {
+            if (!dtParsed.ok) return;
+            copyText(String(dtParsed.tsMs), '已复制输出 Unix 毫秒时间戳。');
+            return;
+          }
+          if (key === 'check_bj') {
+            if (!dtParsed.ok) return;
+            copyText(els.outCheckBj.textContent, '已复制校验的北京时间。');
+            return;
+          }
+        });
+      });
+
+      const onDtChange = () => {
+        updateDtOutputs();
+        syncUrl();
+      };
+      els.dateInput.addEventListener('input', onDtChange);
+      els.timeInput.addEventListener('input', onDtChange);
+      els.msInput.addEventListener('input', onDtChange);
+      els.tzSelect.addEventListener('change', () => {
+        fillCurrentDateTime();
+        updateDtOutputs();
+        syncUrl();
+      });
+
+      els.btnNowDt.addEventListener('click', () => {
+        fillCurrentDateTime();
+        updateDtOutputs();
+        syncUrl();
+        showToast('已填入当前时间', '下方已按所选时区填入当前时间。');
+      });
+
+      els.btnSwap.addEventListener('click', () => {
+        const parsed = parseDateTimeInputs();
+        if (!parsed.ok) {
+          showToast('无法带回', parsed.reason || '请先输入完整日期时间。');
+          return;
+        }
+        els.tsInput.value = String(parsed.tsMs);
+        els.unitRadios.forEach(r => r.checked = r.value === 'ms');
+        updateTsOutputs();
+        syncUrl();
+        showToast('已带回上方', '已将下方结果作为毫秒时间戳填入上方。');
+      });
+
+      document.addEventListener('paste', (e) => {
+        const active = document.activeElement;
+        const tag = active && active.tagName ? active.tagName.toLowerCase() : '';
+        const isEditable = active && (active.isContentEditable || tag === 'input' || tag === 'textarea');
+        const text = e.clipboardData?.getData('text') ?? '';
+        if (!text) return;
+        const applied = tryApplyPasted(text);
+        if (applied && !isEditable) {
+          e.preventDefault();
+        }
+      });
+    }
+
+    function initDefaults() {
+      if (!els.tzSelect.value) els.tzSelect.value = 'bj';
+      fillCurrentDateTime();
+      updateDtOutputs();
+      updateTsOutputs();
+    }
+
+    applyUrl();
+    bindEvents();
+    initDefaults();
+    syncUrl();
+  </script>
+</body>
+</html>
