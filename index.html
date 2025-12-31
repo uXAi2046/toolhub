@@ -1,175 +1,340 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>工具控制台 - Tools Hub</title>
+    <title>Tool Center - Discover Your Toolkit</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Custom font settings if needed, using system stack by default */
         body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: 'Inter', sans-serif;
+            background-color: #F9FAFB; /* Very light gray background */
+        }
+        /* Hide scrollbar for category pills if they overflow on mobile */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-600 antialiased min-h-screen">
+<body class="text-slate-900 antialiased min-h-screen flex flex-col">
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <!-- Header Area -->
-        <header class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 border-b border-gray-200 pb-6">
-            <div>
-                <h1 class="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">工具控制台</h1>
-                <p class="mt-2 text-lg text-gray-500">提升工作效率的独立功能服务集合</p>
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-100 sticky top-0 z-50">
+        <div class="max-w-[1400px] mx-auto px-6 h-16 flex items-center">
+            <!-- Logo -->
+            <div class="flex items-center gap-3 cursor-pointer" onclick="window.location.href='#'">
+                <div class="grid grid-cols-2 gap-0.5 w-6 h-6">
+                    <div class="bg-blue-600 rounded-[1px]"></div>
+                    <div class="bg-blue-600 rounded-[1px]"></div>
+                    <div class="bg-blue-600 rounded-[1px]"></div>
+                    <div class="bg-blue-600 rounded-[1px] opacity-50"></div>
+                </div>
+                <span class="font-bold text-lg tracking-tight text-gray-900">Tool Center</span>
             </div>
-            <div class="self-start md:self-center">
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 border border-indigo-200">
-                    <span class="w-2 h-2 mr-1.5 bg-indigo-500 rounded-full animate-pulse"></span>
-                    Preview Edition v1.0
-                </span>
-            </div>
-        </header>
+        </div>
+    </header>
 
-        <!-- Tools Grid -->
-        <main id="tools-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Cards will be injected here via JavaScript -->
-        </main>
-    </div>
+    <main class="flex-grow max-w-[1400px] mx-auto px-6 py-12 w-full">
+        
+        <!-- Hero Section -->
+        <div class="mb-10">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 tracking-tight">Discover Your Toolkit</h1>
+            <p class="text-lg text-gray-500 max-w-2xl">Access the complete suite of tools designed to enhance your daily workflow and productivity.</p>
+        </div>
+
+        <!-- Search & Filter Section -->
+        <div class="mb-10 space-y-6">
+            <!-- Search Bar -->
+            <div class="relative max-w-xl">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <i class="fa-solid fa-magnifying-glass text-gray-400"></i>
+                </div>
+                <input type="text" id="searchInput" 
+                    class="block w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm transition-all" 
+                    placeholder="Search for a tool by name, category, or keyword...">
+            </div>
+
+            <!-- Category Filters -->
+            <div class="flex flex-wrap gap-2 overflow-x-auto no-scrollbar pb-2" id="categoryFilters">
+                <!-- Filters injected by JS -->
+            </div>
+        </div>
+
+        <!-- Tool Cards Grid -->
+        <div id="toolsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Cards injected by JS -->
+        </div>
+
+        <!-- Load More Button -->
+        <div class="mt-12 flex justify-center">
+            <button class="px-8 py-3 bg-white border border-gray-200 text-gray-600 font-medium rounded-full shadow-sm hover:bg-gray-50 hover:text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200">
+                Load More Tools
+            </button>
+        </div>
+
+    </main>
 
     <script>
-        // Data Mockup
+        // Data Configuration
+        const categories = [
+            { id: 'all', label: 'All Tools', active: true },
+            { id: 'development', label: 'Development', active: false },
+            { id: 'design', label: 'Design', active: false },
+            { id: 'productivity', label: 'Productivity', active: false },
+            { id: 'communication', label: 'Communication', active: false },
+            { id: 'analytics', label: 'Analytics', active: false }
+        ];
+
         const tools = [
             {
                 id: 1,
-                title: "格式转换器",
-                category: "办公",
-                categoryColor: "blue",
-                icon: "fa-file-arrow-right",
-                description: "用法：上传 PDF 文件，一键转换为可编辑的 Word 文档，保留原排版。",
-                highlight: "⚡️ 效率提升：80%",
-                highlightIcon: "fa-bolt"
+                name: "Jira",
+                vendor: "Atlassian",
+                category: "Project Management",
+                categoryStyle: "bg-blue-50 text-blue-700",
+                description: "Track bugs, issues, and manage agile projects with customizable workflows.",
+                meta: "v8.20.1",
+                icon: "fa-jira",
+                iconColor: "text-blue-600",
+                logoBg: "bg-slate-900"
             },
             {
                 id: 2,
-                title: "配色生成器",
-                category: "设计",
-                categoryColor: "purple",
-                icon: "fa-palette",
-                description: "用法：输入主色调或关键词，AI 自动生成和谐的配色方案并提供色值。",
-                highlight: "🎨 灵感激发：100%",
-                highlightIcon: "fa-lightbulb"
+                name: "Figma",
+                vendor: "Figma, Inc.",
+                category: "Design",
+                categoryStyle: "bg-purple-50 text-purple-700",
+                description: "Collaborative interface design tool. Design, prototype, and developer handoff.",
+                meta: "Web App",
+                icon: "fa-figma",
+                iconColor: "text-purple-500", // Figma logo has multiple colors, keeping generic or specific
+                logoBg: "bg-slate-900"
             },
             {
                 id: 3,
-                title: "文本清洗",
-                category: "开发",
-                categoryColor: "emerald",
-                icon: "fa-broom",
-                description: "用法：粘贴文本，自动去除多余空行、特殊字符及 HTML 标签。",
-                highlight: "🧹 纯净度：Perfect",
-                highlightIcon: "fa-check-circle"
+                name: "Slack",
+                vendor: "Salesforce",
+                category: "Communication",
+                categoryStyle: "bg-yellow-50 text-yellow-700",
+                description: "Team communication and collaboration platform. Connect your tools and teams.",
+                meta: "Desktop",
+                icon: "fa-slack",
+                iconColor: "text-white", // Slack usually colorful on dark or white
+                logoBg: "bg-white border border-gray-100" // Slack icon is often colorful on white
             },
             {
                 id: 4,
-                title: "图片压缩",
-                category: "媒体",
-                categoryColor: "rose",
-                icon: "fa-image",
-                description: "用法：拖拽 PNG/JPG 图片，智能无损压缩，大幅减小体积。",
-                highlight: "💾 节省空间：60%+",
-                highlightIcon: "fa-hard-drive"
+                name: "GitHub",
+                vendor: "Microsoft",
+                category: "Development",
+                categoryStyle: "bg-gray-100 text-gray-700",
+                description: "Version control and source code management. The world's largest developer platform.",
+                meta: "Enterprise",
+                icon: "fa-github",
+                iconColor: "text-white",
+                logoBg: "bg-slate-900"
             },
             {
                 id: 5,
-                title: "正则测试",
-                category: "开发",
-                categoryColor: "emerald",
-                icon: "fa-code",
-                description: "用法：实时输入正则表达式与测试文本，高亮显示匹配结果。",
-                highlight: "🛠️ 调试速度：Instant",
-                highlightIcon: "fa-rocket"
+                name: "Notion",
+                vendor: "Notion Labs",
+                category: "Productivity",
+                categoryStyle: "bg-green-50 text-green-700",
+                description: "All-in-one workspace for notes, tasks, wikis, and databases.",
+                meta: "v2.12",
+                icon: "fa-n", // Using 'N' or generic file if not available
+                isBrandIcon: false, // Fallback logic
+                customIcon: "N",
+                iconColor: "text-white",
+                logoBg: "bg-slate-900"
             },
             {
                 id: 6,
-                title: "汇率计算",
-                category: "金融",
-                categoryColor: "amber",
-                icon: "fa-coins",
-                description: "用法：实时获取全球货币汇率，支持多币种快速换算。",
-                highlight: "💰 数据同步：Real-time",
-                highlightIcon: "fa-sync-alt"
+                name: "VS Code",
+                vendor: "Microsoft",
+                category: "Development",
+                categoryStyle: "bg-blue-50 text-blue-700",
+                description: "Code editor redefined and optimized for building and debugging modern web apps.",
+                meta: "v1.86",
+                icon: "fa-code", // VS Code doesn't have a free brand icon in FA 6.4 sometimes, using generic code
+                iconColor: "text-blue-500",
+                logoBg: "bg-slate-900"
+            },
+            {
+                id: 7,
+                name: "Zoom",
+                vendor: "Zoom Video",
+                category: "Communication",
+                categoryStyle: "bg-blue-50 text-blue-700",
+                description: "Video conferencing and web conferencing service. Simplified video calling.",
+                meta: "Licensed",
+                icon: "fa-video",
+                iconColor: "text-white",
+                logoBg: "bg-blue-500"
+            },
+            {
+                id: 8,
+                name: "Trello",
+                vendor: "Atlassian",
+                category: "Project Management",
+                categoryStyle: "bg-blue-50 text-blue-700",
+                description: "Collaborative tool for organizing your projects into boards. Incredible flexibility.",
+                meta: "Web App",
+                icon: "fa-trello",
+                iconColor: "text-blue-600",
+                logoBg: "bg-blue-50" // Trello logo usually blue on white or white on blue
             }
         ];
 
-        // Color mapping for badges
-        const colorStyles = {
-            blue: 'bg-blue-100 text-blue-700 border-blue-200',
-            purple: 'bg-purple-100 text-purple-700 border-purple-200',
-            emerald: 'bg-emerald-100 text-emerald-700 border-emerald-200',
-            rose: 'bg-rose-100 text-rose-700 border-rose-200',
-            amber: 'bg-amber-100 text-amber-700 border-amber-200',
-            gray: 'bg-gray-100 text-gray-700 border-gray-200'
-        };
+        // --- Render Functions ---
 
-        // Render Function
-        function renderTools() {
-            const container = document.getElementById('tools-grid');
-            let htmlContent = '';
+        function renderFilters() {
+            const container = document.getElementById('categoryFilters');
+            container.innerHTML = categories.map(cat => `
+                <button 
+                    onclick="setFilter('${cat.id}')"
+                    class="px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 border ${
+                        cat.active 
+                        ? 'bg-slate-900 text-white border-slate-900 shadow-sm' 
+                        : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                    }">
+                    ${cat.label}
+                </button>
+            `).join('');
+        }
 
-            tools.forEach(tool => {
-                const badgeStyle = colorStyles[tool.categoryColor] || colorStyles.gray;
-                
-                htmlContent += `
-                    <div class="group bg-white rounded-xl border border-gray-200 p-5 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 flex flex-col h-full">
-                        <!-- Card Header -->
-                        <div class="flex justify-between items-start mb-3">
-                            <span class="inline-block px-2.5 py-1 rounded-full text-xs font-semibold border ${badgeStyle}">
-                                ${tool.category}
-                            </span>
-                            <div class="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center text-gray-500 group-hover:bg-gray-100 group-hover:text-gray-700 transition-colors">
-                                <i class="fa-solid ${tool.icon} text-lg"></i>
-                            </div>
-                        </div>
+        function renderTools(filterId = 'all', searchQuery = '') {
+            const container = document.getElementById('toolsGrid');
+            
+            // Filter logic
+            const filteredTools = tools.filter(tool => {
+                const matchesCategory = filterId === 'all' || 
+                                        tool.category.toLowerCase().includes(filterId) ||
+                                        (filterId === 'development' && tool.category === 'Development') || // Exact match mapping if needed
+                                        (filterId === 'productivity' && tool.category === 'Productivity') || // Mapping "Project Management" to "Productivity" or keep separate? 
+                                        // The UI has "Project Management" tag but "Productivity" filter. 
+                                        // Usually Project Management falls under Productivity or Development. 
+                                        // Let's assume strict mapping for now, but allow broad search.
+                                        // Wait, the prompt shows "Project Management" tags on cards, but "Productivity" in filters.
+                                        // I'll make the filter logic simple: text match on category, or map specific IDs.
+                                        // Let's just match string inclusion for simplicity in this prototype.
+                                        (filterId === 'productivity' && tool.category === 'Project Management'); 
 
-                        <!-- Card Body -->
-                        <div class="mb-4 flex-grow">
-                            <h3 class="text-xl font-bold text-gray-900 mb-1 group-hover:text-indigo-600 transition-colors">
-                                ${tool.title}
-                            </h3>
-                            <p class="text-sm text-gray-600 leading-relaxed">
-                                ${tool.description}
-                            </p>
-                        </div>
+                const matchesSearch = tool.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                      tool.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                      tool.vendor.toLowerCase().includes(searchQuery.toLowerCase());
 
-                        <!-- Card Footer/Highlight -->
-                        <div class="pt-3 border-t border-gray-100 flex items-center text-sm font-medium text-gray-500">
-                            <i class="fa-solid ${tool.highlightIcon} mr-2 ${getHighlightColor(tool.categoryColor)}"></i>
-                            <span class="${getHighlightColor(tool.categoryColor)}">${tool.highlight}</span>
-                        </div>
-                    </div>
-                `;
+                return matchesCategory && matchesSearch;
             });
 
-            container.innerHTML = htmlContent;
+            if (filteredTools.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-12 text-gray-500">
+                        <i class="fa-solid fa-inbox text-4xl mb-3 text-gray-300"></i>
+                        <p>No tools found matching your criteria.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filteredTools.map(tool => {
+                // Icon handling
+                let iconHtml = '';
+                if (tool.name === 'Slack') {
+                     // Special handling for colorful logos if needed, but for now FA icons
+                     iconHtml = `<i class="fa-brands fa-slack text-2xl text-transparent bg-clip-text bg-gradient-to-br from-blue-500 via-green-500 to-red-500" style="-webkit-text-fill-color: transparent;"></i>`; 
+                     // Actually standard slack colors are hard with one icon class. Let's just use a colored icon.
+                     iconHtml = `<i class="fa-brands fa-slack text-2xl text-[#E01E5A]"></i>`;
+                } else if (tool.name === 'Figma') {
+                     iconHtml = `<i class="fa-brands fa-figma text-2xl text-white"></i>`;
+                } else if (tool.name === 'Notion') {
+                     iconHtml = `<span class="text-xl font-bold text-white">N</span>`;
+                } else {
+                     iconHtml = `<i class="${tool.name === 'Zoom' || tool.name === 'VS Code' ? 'fa-solid' : 'fa-brands'} ${tool.icon} text-2xl ${tool.iconColor}"></i>`;
+                }
+
+                // Trello specifics
+                if (tool.name === 'Trello') {
+                    iconHtml = `<i class="fa-brands fa-trello text-2xl text-[#0079BF]"></i>`;
+                }
+
+                // Logo Container Background adjustment
+                let logoContainerClass = `w-12 h-12 rounded-xl flex items-center justify-center mb-4 shadow-sm ${tool.logoBg}`;
+                if (tool.name === 'Slack' || tool.name === 'Trello') {
+                    logoContainerClass = `w-12 h-12 rounded-xl flex items-center justify-center mb-4 shadow-sm bg-white border border-gray-100`;
+                }
+
+                return `
+                <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-shadow duration-300 flex flex-col h-full group cursor-pointer">
+                    <!-- Top Row: Icon & Info in one line -->
+                    <div class="flex items-center gap-4 mb-4">
+                        <!-- Icon -->
+                        <div class="${logoContainerClass} mb-0 shrink-0">
+                            ${iconHtml}
+                        </div>
+                        
+                        <!-- Title & Vendor -->
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900 leading-tight group-hover:text-blue-600 transition-colors">${tool.name}</h3>
+                            <p class="text-sm text-gray-500">${tool.vendor}</p>
+                        </div>
+                    </div>
+
+                    <!-- Tag -->
+                    <div class="mb-4">
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium ${tool.categoryStyle}">
+                            ${tool.category}
+                        </span>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="flex-grow mb-6">
+                        <p class="text-sm text-gray-500 leading-relaxed line-clamp-2">
+                            ${tool.description}
+                        </p>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="pt-4 border-t border-gray-50 flex items-center justify-between text-xs text-gray-400 mt-auto">
+                        <span class="font-medium text-gray-500">${tool.meta}</span>
+                        <div class="w-6 h-6 rounded flex items-center justify-center hover:bg-gray-100 transition-colors text-gray-300 hover:text-gray-600">
+                            <i class="fa-solid fa-arrow-up-right-from-square text-sm"></i>
+                        </div>
+                    </div>
+                </div>
+            `}).join('');
         }
 
-        // Helper for highlight text color
-        function getHighlightColor(colorName) {
-            const map = {
-                blue: 'text-blue-600',
-                purple: 'text-purple-600',
-                emerald: 'text-emerald-600',
-                rose: 'text-rose-600',
-                amber: 'text-amber-600',
-                gray: 'text-gray-600'
-            };
-            return map[colorName] || 'text-gray-600';
+        // --- Interaction Functions ---
+
+        function setFilter(id) {
+            categories.forEach(c => c.active = (c.id === id));
+            renderFilters();
+            
+            const searchVal = document.getElementById('searchInput').value;
+            renderTools(id, searchVal);
         }
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', renderTools);
+        // --- Event Listeners ---
+
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const activeCat = categories.find(c => c.active).id;
+            renderTools(activeCat, e.target.value);
+        });
+
+        // --- Init ---
+        renderFilters();
+        renderTools();
+
     </script>
 </body>
 </html>
