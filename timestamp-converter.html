@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unix Timestamp Converter - Tool Center</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F9FAFB;
+        }
+    </style>
+</head>
+<body class="text-slate-900 antialiased min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-100 sticky top-0 z-50">
+        <div class="max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">
+            <!-- Logo -->
+            <a href="index.html" class="flex items-center gap-3 cursor-pointer">
+                <div class="grid grid-cols-2 gap-0.5 w-6 h-6">
+                    <div class="bg-blue-600 rounded-[1px]"></div>
+                    <div class="bg-blue-600 rounded-[1px]"></div>
+                    <div class="bg-blue-600 rounded-[1px]"></div>
+                    <div class="bg-blue-600 rounded-[1px] opacity-50"></div>
+                </div>
+                <span class="font-bold text-lg tracking-tight text-gray-900">Tool Center</span>
+            </a>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-[1400px] mx-auto px-6 py-12 w-full">
+        
+        <!-- Hero Header -->
+        <div class="mb-8">
+            <h1 class="text-4xl font-extrabold text-gray-900 mb-2 tracking-tight">Unix Timestamp Converter</h1>
+            <p class="text-gray-500">Convert Unix timestamps to human-readable dates and vice-versa.</p>
+        </div>
+
+        <!-- Main Converter Card -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-12">
+            
+            <!-- Epoch Hero -->
+            <div class="p-8 text-center border-b border-gray-100 bg-gray-50/30 relative">
+                <div class="absolute top-6 right-6">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700 tracking-wide">
+                        <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                        LIVE
+                    </span>
+                </div>
+                <div class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">CURRENT UNIX EPOCH</div>
+                <div id="currentEpoch" class="text-6xl md:text-7xl font-bold text-blue-600 tracking-tighter mb-2 font-mono">
+                    Loading...
+                </div>
+                <div class="text-xs text-gray-400 uppercase tracking-wide font-mono">seconds since Jan 01 1970 (UTC)</div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-100">
+                
+                <!-- Left Column: Timestamp to Date -->
+                <div class="p-8">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-lg">
+                            <i class="fa-regular fa-clock"></i>
+                        </div>
+                        <div>
+                            <h2 class="font-bold text-gray-900">Timestamp to Date</h2>
+                            <p class="text-xs text-gray-500">Convert integer to date string</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 mb-1.5">Enter Timestamp</label>
+                            <div class="relative">
+                                <input type="number" id="tsInput" class="block w-full rounded-lg border-gray-200 bg-gray-50 focus:bg-white focus:border-blue-500 focus:ring-blue-500 text-gray-900 py-2.5 px-3 pr-10 font-mono text-sm" placeholder="1685328000">
+                                <button onclick="pasteTimestamp()" class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-400 hover:text-gray-600">
+                                    <i class="fa-regular fa-clipboard"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <button onclick="convertTimestamp()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2">
+                            Convert to Date <i class="fa-solid fa-arrow-down text-xs"></i>
+                        </button>
+
+                        <div id="tsResult" class="hidden bg-gray-50 rounded-lg p-4 space-y-3 border border-gray-100">
+                            <div>
+                                <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">GMT / UTC</div>
+                                <div id="resGmt" class="font-mono text-sm text-gray-900"></div>
+                            </div>
+                            <div>
+                                <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">YOUR LOCAL TIME</div>
+                                <div id="resLocal" class="font-mono text-sm text-gray-900"></div>
+                            </div>
+                            <div>
+                                <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">RELATIVE</div>
+                                <div id="resRelative" class="font-mono text-sm text-gray-900"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Date to Timestamp -->
+                <div class="p-8">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-lg">
+                            <i class="fa-regular fa-calendar-check"></i>
+                        </div>
+                        <div>
+                            <h2 class="font-bold text-gray-900">Date to Timestamp</h2>
+                            <p class="text-xs text-gray-500">Convert date time to integer</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 mb-1.5">Select Date & Time</label>
+                            <div class="flex gap-2">
+                                <input type="date" id="dateInput" class="block w-full rounded-lg border-gray-200 bg-gray-50 focus:bg-white focus:border-blue-500 focus:ring-blue-500 text-gray-900 py-2.5 px-3 text-sm">
+                                <input type="time" id="timeInput" step="1" class="block w-40 rounded-lg border-gray-200 bg-gray-50 focus:bg-white focus:border-blue-500 focus:ring-blue-500 text-gray-900 py-2.5 px-3 text-sm">
+                            </div>
+                            <div class="mt-2 flex gap-3 text-xs font-medium">
+                                <button onclick="setNow()" class="text-blue-600 hover:text-blue-800 hover:underline">Now</button>
+                                <span class="text-gray-300">|</span>
+                                <button onclick="setStartOfDay()" class="text-blue-600 hover:text-blue-800 hover:underline">Start of Day</button>
+                                <span class="text-gray-300">|</span>
+                                <button onclick="setEndOfDay()" class="text-blue-600 hover:text-blue-800 hover:underline">End of Day</button>
+                            </div>
+                        </div>
+
+                        <button onclick="convertDate()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2">
+                            Convert to Timestamp <i class="fa-solid fa-arrow-down text-xs"></i>
+                        </button>
+
+                        <div id="dateResult" class="hidden bg-gray-50 rounded-lg p-4 border border-gray-100 flex items-center justify-between">
+                            <div>
+                                <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">UNIX TIMESTAMP</div>
+                                <div id="resTimestamp" class="text-xl font-bold text-gray-900 font-mono tracking-tight"></div>
+                                <div class="text-[10px] text-gray-400 mt-1">Seconds since Jan 01 1970 (UTC)</div>
+                            </div>
+                            <button onclick="copyTimestamp()" class="text-gray-400 hover:text-blue-600 transition-colors p-2">
+                                <i class="fa-regular fa-copy text-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Related Tools -->
+        <div>
+            <h3 class="text-lg font-bold text-gray-900 mb-6">Related Tools</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                
+                <!-- Card 1 -->
+                <a href="json-formatter.html" class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all group">
+                    <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-code"></i>
+                    </div>
+                    <h4 class="font-bold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">JSON Formatter</h4>
+                    <p class="text-xs text-gray-500">Prettify minified JSON code.</p>
+                </a>
+
+                <!-- Card 2 -->
+                <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all group cursor-pointer">
+                    <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-code-compare"></i>
+                    </div>
+                    <h4 class="font-bold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">Base64 Encoder</h4>
+                    <p class="text-xs text-gray-500">Encode and decode Base64.</p>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all group cursor-pointer">
+                    <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-link"></i>
+                    </div>
+                    <h4 class="font-bold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">URL Parser</h4>
+                    <p class="text-xs text-gray-500">Parse and analyze URLs.</p>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all group cursor-pointer">
+                    <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-palette"></i>
+                    </div>
+                    <h4 class="font-bold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">Color Picker</h4>
+                    <p class="text-xs text-gray-500">HEX, RGB, and HSL converter.</p>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // --- Live Epoch Clock ---
+        function updateEpoch() {
+            const now = Math.floor(Date.now() / 1000);
+            document.getElementById('currentEpoch').innerText = now;
+        }
+        setInterval(updateEpoch, 1000);
+        updateEpoch(); // Initial call
+
+        // --- Timestamp to Date Logic ---
+        function convertTimestamp() {
+            const input = document.getElementById('tsInput').value.trim();
+            if (!input) return;
+
+            // Handle seconds vs milliseconds heuristic or strict seconds?
+            // Usually these tools assume seconds for "Unix Timestamp" unless huge.
+            // Let's assume Seconds as per UI "seconds since Jan 01 1970".
+            let ts = parseInt(input, 10);
+            
+            // Basic validation
+            if (isNaN(ts)) {
+                alert('Please enter a valid number');
+                return;
+            }
+
+            const date = new Date(ts * 1000);
+
+            // GMT String
+            document.getElementById('resGmt').innerText = date.toUTCString();
+            
+            // Local String (Trying to match "Sun, 28 May 2023 20:26:40 EDT" format)
+            // toString() gives "Sun May 28 2023 20:26:40 GMT-0400 (Eastern Daylight Time)"
+            // Let's use a cleaner formatter or just toString for now as browser support varies for timezone abbr.
+            document.getElementById('resLocal').innerText = date.toString().split('(')[0];
+
+            // Relative Time
+            document.getElementById('resRelative').innerText = getRelativeTime(ts);
+
+            document.getElementById('tsResult').classList.remove('hidden');
+        }
+
+        async function pasteTimestamp() {
+            try {
+                const text = await navigator.clipboard.readText();
+                if (!isNaN(parseInt(text))) {
+                    document.getElementById('tsInput').value = text.trim();
+                }
+            } catch (err) {
+                // Ignore
+            }
+        }
+
+        function getRelativeTime(ts) {
+            const now = Math.floor(Date.now() / 1000);
+            const diff = now - ts;
+            const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+
+            if (Math.abs(diff) < 60) return rtf.format(-diff, 'second');
+            if (Math.abs(diff) < 3600) return rtf.format(-Math.floor(diff / 60), 'minute');
+            if (Math.abs(diff) < 86400) return rtf.format(-Math.floor(diff / 3600), 'hour');
+            if (Math.abs(diff) < 2592000) return rtf.format(-Math.floor(diff / 86400), 'day'); // 30 days
+            if (Math.abs(diff) < 31536000) return rtf.format(-Math.floor(diff / 2592000), 'month');
+            return rtf.format(-Math.floor(diff / 31536000), 'year');
+        }
+
+        // --- Date to Timestamp Logic ---
+        function setNow() {
+            const now = new Date();
+            updateDateInputs(now);
+        }
+
+        function setStartOfDay() {
+            const now = new Date();
+            now.setHours(0, 0, 0, 0);
+            updateDateInputs(now);
+        }
+
+        function setEndOfDay() {
+            const now = new Date();
+            now.setHours(23, 59, 59, 999);
+            updateDateInputs(now);
+        }
+
+        function updateDateInputs(date) {
+            // Format YYYY-MM-DD
+            const yyyy = date.getFullYear();
+            const mm = String(date.getMonth() + 1).padStart(2, '0');
+            const dd = String(date.getDate()).padStart(2, '0');
+            document.getElementById('dateInput').value = `${yyyy}-${mm}-${dd}`;
+
+            // Format HH:mm:ss
+            const hh = String(date.getHours()).padStart(2, '0');
+            const min = String(date.getMinutes()).padStart(2, '0');
+            const ss = String(date.getSeconds()).padStart(2, '0');
+            document.getElementById('timeInput').value = `${hh}:${min}:${ss}`;
+        }
+
+        function convertDate() {
+            const dateVal = document.getElementById('dateInput').value;
+            const timeVal = document.getElementById('timeInput').value;
+
+            if (!dateVal) return;
+
+            const dateTimeString = `${dateVal}T${timeVal || '00:00:00'}`;
+            const date = new Date(dateTimeString);
+            const ts = Math.floor(date.getTime() / 1000);
+
+            if (isNaN(ts)) {
+                alert('Invalid Date');
+                return;
+            }
+
+            document.getElementById('resTimestamp').innerText = ts;
+            document.getElementById('dateResult').classList.remove('hidden');
+        }
+
+        function copyTimestamp() {
+            const ts = document.getElementById('resTimestamp').innerText;
+            if (ts) {
+                navigator.clipboard.writeText(ts);
+                // Optional feedback
+            }
+        }
+
+        // Initialize with default timestamp in input for demo
+        document.getElementById('tsInput').value = Math.floor(Date.now() / 1000);
+        
+        // Initialize date inputs
+        setNow();
+
+    </script>
+</body>
+</html>
