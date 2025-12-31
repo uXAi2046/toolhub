@@ -101,7 +101,7 @@
                 vendor: "Tool Center",
                 category: "Development",
                 categoryStyle: "bg-blue-50 text-blue-700",
-                description: "Minify or beautify your JSON strings with proper indentation to make them easier to read and debug.",
+                description: "Prettify minified JSON code.",
                 meta: "v2.4.0",
                 icon: "fa-code",
                 iconColor: "text-blue-600",
@@ -196,9 +196,9 @@
                 }
 
                 // Logo Container Background adjustment
-                let logoContainerClass = `w-12 h-12 rounded-xl flex items-center justify-center mb-4 shadow-sm ${tool.logoBg}`;
+                let logoContainerClass = `w-12 h-12 rounded-full flex items-center justify-center mb-4 shadow-sm ${tool.logoBg}`;
                 if (tool.name === 'Slack' || tool.name === 'Trello') {
-                    logoContainerClass = `w-12 h-12 rounded-xl flex items-center justify-center mb-4 shadow-sm bg-white border border-gray-100`;
+                    logoContainerClass = `w-12 h-12 rounded-full flex items-center justify-center mb-4 shadow-sm bg-white border border-gray-100`;
                 }
 
                 return `
