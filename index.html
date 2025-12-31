@@ -192,6 +192,19 @@
                 icon: "fa-trello",
                 iconColor: "text-blue-600",
                 logoBg: "bg-blue-50" // Trello logo usually blue on white or white on blue
+            },
+            {
+                id: 9,
+                name: "JSON Formatter",
+                vendor: "Tool Center",
+                category: "Development",
+                categoryStyle: "bg-blue-50 text-blue-700",
+                description: "Minify or beautify your JSON strings with proper indentation to make them easier to read and debug.",
+                meta: "v2.4.0",
+                icon: "fa-code",
+                iconColor: "text-blue-600",
+                logoBg: "bg-blue-50",
+                link: "json-formatter.html"
             }
         ];
 
@@ -274,7 +287,7 @@
                 }
 
                 return `
-                <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-shadow duration-300 flex flex-col h-full group cursor-pointer">
+                <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-shadow duration-300 flex flex-col h-full group cursor-pointer" onclick="${tool.link ? `window.location.href='${tool.link}'` : ''}">
                     <!-- Top Row: Icon & Info in one line -->
                     <div class="flex items-center gap-4 mb-4">
                         <!-- Icon -->
