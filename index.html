@@ -233,7 +233,7 @@
                 categoryStyle: "bg-blue-50 text-blue-700",
                 description: "Convert transcript JSON structures into clean, readable Markdown format.",
                 meta: "v1.0.0",
-                icon: "fa-arrow-right-arrow-left",
+                icon: "fa-file-code",
                 iconColor: "text-blue-600",
                 logoBg: "bg-blue-50",
                 link: "json-to-markdown.html"
@@ -272,7 +272,7 @@
                 categoryStyle: "bg-red-50 text-red-700",
                 description: "See which tags survive HTML sanitization and ensure your content is safe.",
                 meta: "v1.0.0",
-                icon: "fa-shield-cat",
+                icon: "fa-filter",
                 iconColor: "text-red-600",
                 logoBg: "bg-red-50",
                 link: "html-sanitizer.html"
@@ -356,7 +356,7 @@
                 } else if (tool.name === 'Notion') {
                      iconHtml = `<span class="text-xl font-bold text-white">N</span>`;
                 } else {
-                     iconHtml = `<i class="${tool.name === 'Zoom' || tool.name === 'VS Code' || tool.name === 'JSON Formatter' || tool.name === 'Base64 Encoder' || tool.name === 'URL Parser' || tool.name === 'Color Picker' || tool.name === 'Unix Timestamp' || tool.name === 'JSON Diff' || tool.name === 'JWT Decoder' || tool.name === 'Gradient Maker' || tool.name === 'MD5 Generator' || tool.name === 'XML Formatter' ? 'fa-solid' : 'fa-brands'} ${tool.icon} text-2xl ${tool.iconColor}"></i>`;
+                     iconHtml = `<i class="${tool.name === 'Zoom' || tool.name === 'VS Code' || tool.name === 'JSON Formatter' || tool.name === 'Base64 Encoder' || tool.name === 'URL Parser' || tool.name === 'Color Picker' || tool.name === 'Unix Timestamp' || tool.name === 'JSON Diff' || tool.name === 'JWT Decoder' || tool.name === 'Gradient Maker' || tool.name === 'MD5 Generator' || tool.name === 'XML Formatter' || tool.name === 'JSON to Markdown' || tool.name === 'Extract URLs' || tool.name === 'Clipboard Viewer' || tool.name === 'Paste HTML Subset' || tool.name === 'Paste Rich Text' ? 'fa-solid' : 'fa-brands'} ${tool.icon} text-2xl ${tool.iconColor}"></i>`;
                 }
 
                 // Trello specifics
