@@ -159,6 +159,71 @@
                 iconColor: "text-teal-600",
                 logoBg: "bg-teal-50",
                 link: "url-parser.html"
+            },
+            {
+                id: 14,
+                name: "JSON Diff",
+                vendor: "Tool Center",
+                category: "Development",
+                categoryStyle: "bg-purple-50 text-purple-700",
+                description: "Compare two JSON files to identify differences.",
+                meta: "v2.1.0",
+                icon: "fa-file-contract",
+                iconColor: "text-purple-600",
+                logoBg: "bg-purple-50",
+                link: "json-diff.html"
+            },
+            {
+                id: 15,
+                name: "JWT Decoder",
+                vendor: "Tool Center",
+                category: "Development",
+                categoryStyle: "bg-red-50 text-red-700",
+                description: "Debug JWT tokens and view claims securely.",
+                meta: "v1.0.0",
+                icon: "fa-shield-halved",
+                iconColor: "text-red-600",
+                logoBg: "bg-red-50",
+                link: "jwt-decoder.html"
+            },
+            {
+                id: 16,
+                name: "Gradient Maker",
+                vendor: "Tool Center",
+                category: "Design",
+                categoryStyle: "bg-indigo-50 text-indigo-700",
+                description: "Create beautiful CSS gradients for your UI projects.",
+                meta: "v2.1.0",
+                icon: "fa-wand-magic-sparkles",
+                iconColor: "text-indigo-600",
+                logoBg: "bg-indigo-50",
+                link: "gradient-maker.html"
+            },
+            {
+                id: 17,
+                name: "MD5 Generator",
+                vendor: "Tool Center",
+                category: "Development",
+                categoryStyle: "bg-gray-100 text-gray-700",
+                description: "Create MD5 hashes securely from any string input.",
+                meta: "v1.0.0",
+                icon: "fa-fingerprint",
+                iconColor: "text-gray-600",
+                logoBg: "bg-gray-100",
+                link: "md5-generator.html"
+            },
+            {
+                id: 18,
+                name: "XML Formatter",
+                vendor: "Tool Center",
+                category: "Development",
+                categoryStyle: "bg-blue-50 text-blue-700",
+                description: "Beautify, format, and minify XML data.",
+                meta: "v2.1.0",
+                icon: "fa-file-lines",
+                iconColor: "text-blue-600",
+                logoBg: "bg-blue-50",
+                link: "xml-formatter.html"
             }
         ];
 
@@ -226,7 +291,7 @@
                 } else if (tool.name === 'Notion') {
                      iconHtml = `<span class="text-xl font-bold text-white">N</span>`;
                 } else {
-                     iconHtml = `<i class="${tool.name === 'Zoom' || tool.name === 'VS Code' || tool.name === 'JSON Formatter' || tool.name === 'Base64 Encoder' || tool.name === 'URL Parser' || tool.name === 'Color Picker' || tool.name === 'Unix Timestamp' ? 'fa-solid' : 'fa-brands'} ${tool.icon} text-2xl ${tool.iconColor}"></i>`;
+                     iconHtml = `<i class="${tool.name === 'Zoom' || tool.name === 'VS Code' || tool.name === 'JSON Formatter' || tool.name === 'Base64 Encoder' || tool.name === 'URL Parser' || tool.name === 'Color Picker' || tool.name === 'Unix Timestamp' || tool.name === 'JSON Diff' || tool.name === 'JWT Decoder' || tool.name === 'Gradient Maker' || tool.name === 'MD5 Generator' || tool.name === 'XML Formatter' ? 'fa-solid' : 'fa-brands'} ${tool.icon} text-2xl ${tool.iconColor}"></i>`;
                 }
 
                 // Trello specifics

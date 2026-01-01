@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gradient Maker - Tool Center</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Inter', sans-serif; background-color: #F9FAFB; }</style>
+</head>
+<body class="text-slate-900 antialiased min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-100 sticky top-0 z-50">
+        <div class="max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-3 cursor-pointer">
+                <div class="grid grid-cols-2 gap-0.5 w-6 h-6">
+                    <div class="bg-blue-600 rounded-[1px]"></div>
+                    <div class="bg-blue-600 rounded-[1px]"></div>
+                    <div class="bg-blue-600 rounded-[1px]"></div>
+                    <div class="bg-blue-600 rounded-[1px] opacity-50"></div>
+                </div>
+                <span class="font-bold text-lg tracking-tight text-gray-900">Tool Center</span>
+            </a>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-[1400px] mx-auto px-6 py-8 w-full">
+        <!-- Breadcrumbs -->
+        <div class="mb-6 flex items-center text-sm text-gray-500">
+            <a href="#" class="hover:text-blue-600 transition-colors"><i class="fa-solid fa-arrow-left mr-2"></i>Back to Design Tools</a>
+            <span class="mx-3 text-gray-300">/</span>
+            <a href="index.html" class="hover:text-gray-700">Home</a>
+            <span class="mx-3 text-gray-300">/</span>
+            <span class="font-medium text-gray-900">Gradient Maker</span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Main Content -->
+            <div class="lg:col-span-8 space-y-6">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900 mb-3">Gradient Maker</h1>
+                    <p class="text-gray-500 leading-relaxed">Create CSS gradients. Define colors, direction, and stops to generate beautiful backgrounds for your UI projects.</p>
+                </div>
+
+                <!-- Config Card -->
+                <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="font-bold text-gray-900 flex items-center gap-2">
+                            <i class="fa-solid fa-sliders text-blue-600 text-sm"></i> Gradient Configuration
+                        </h2>
+                        <div class="flex gap-3">
+                            <button onclick="randomGradient()" class="text-xs font-medium text-gray-500 hover:text-blue-600 flex items-center gap-1"><i class="fa-solid fa-shuffle"></i> Random</button>
+                            <button onclick="resetGradient()" class="text-xs font-medium text-gray-500 hover:text-blue-600 flex items-center gap-1"><i class="fa-solid fa-rotate-right"></i> Reset</button>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col md:flex-row gap-8">
+                        <!-- Preview -->
+                        <div class="flex-1">
+                            <div id="gradientPreview" class="w-full h-64 rounded-xl shadow-inner mb-2 bg-gradient-to-r from-blue-500 to-purple-500"></div>
+                            <div class="flex justify-between text-xs text-gray-400 px-1">
+                                <span>Preview</span>
+                                <button class="hover:text-blue-600">Full Screen</button>
+                            </div>
+                        </div>
+
+                        <!-- Controls -->
+                        <div class="w-full md:w-64 space-y-6">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">TYPE</label>
+                                    <select class="w-full text-sm border-gray-200 rounded-lg bg-gray-50 py-2 px-3">
+                                        <option>Linear</option>
+                                        <option>Radial</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">DIRECTION</label>
+                                    <div class="relative">
+                                        <input type="number" id="directionInput" value="90" class="w-full text-sm border-gray-200 rounded-lg bg-gray-50 py-2 px-3 pr-8">
+                                        <span class="absolute right-3 top-2 text-gray-400 text-xs">deg</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <label class="block text-xs font-bold text-gray-500 uppercase">COLOR STOPS</label>
+                                    <button class="text-xs font-bold text-blue-600 hover:text-blue-700">+ Add Stop</button>
+                                </div>
+                                <div class="space-y-3" id="colorStops">
+                                    <!-- Stop 1 -->
+                                    <div class="flex items-center gap-3">
+                                        <input type="color" value="#3B82F6" class="w-8 h-8 rounded cursor-pointer border-none p-0 bg-transparent" oninput="updateGradient()">
+                                        <input type="range" value="0" min="0" max="100" class="flex-1 h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600" oninput="updateGradient()">
+                                        <span class="text-xs font-mono text-gray-600 w-8 text-right">0%</span>
+                                    </div>
+                                    <!-- Stop 2 -->
+                                    <div class="flex items-center gap-3">
+                                        <input type="color" value="#A855F7" class="w-8 h-8 rounded cursor-pointer border-none p-0 bg-transparent" oninput="updateGradient()">
+                                        <input type="range" value="100" min="0" max="100" class="flex-1 h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600" oninput="updateGradient()">
+                                        <span class="text-xs font-mono text-gray-600 w-8 text-right">100%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Output -->
+                <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+                    <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4"><i class="fa-solid fa-code mr-1"></i> CSS Output</h3>
+                    <div class="relative">
+                        <pre id="cssOutput" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-4 text-sm font-mono text-gray-700 overflow-x-auto">background: linear-gradient(90deg, #3B82F6 0%, #A855F7 100%);</pre>
+                        <button onclick="copyCSS()" class="absolute right-4 top-4 text-gray-400 hover:text-blue-600 bg-white p-1.5 rounded shadow-sm border border-gray-100"><i class="fa-regular fa-copy"></i></button>
+                    </div>
+                </div>
+
+                <!-- Trending -->
+                <div>
+                    <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2"><i class="fa-solid fa-fire text-purple-600"></i> Trending Gradients</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="cursor-pointer group" onclick="applyPreset('linear-gradient(to right, #ff512f, #dd2476)')">
+                            <div class="h-24 rounded-lg bg-gradient-to-r from-orange-500 to-pink-600 shadow-sm group-hover:shadow-md transition-all"></div>
+                            <p class="text-xs text-center mt-2 text-gray-500 font-medium">Sunset</p>
+                        </div>
+                        <div class="cursor-pointer group" onclick="applyPreset('linear-gradient(to right, #2E3192, #1BFFFF)')">
+                            <div class="h-24 rounded-lg bg-gradient-to-r from-blue-700 to-cyan-400 shadow-sm group-hover:shadow-md transition-all"></div>
+                            <p class="text-xs text-center mt-2 text-gray-500 font-medium">Ocean</p>
+                        </div>
+                        <div class="cursor-pointer group" onclick="applyPreset('linear-gradient(to right, #0f2027, #203a43, #2c5364)')">
+                            <div class="h-24 rounded-lg bg-gradient-to-r from-slate-900 via-slate-700 to-slate-600 shadow-sm group-hover:shadow-md transition-all"></div>
+                            <p class="text-xs text-center mt-2 text-gray-500 font-medium">Midnight</p>
+                        </div>
+                        <div class="cursor-pointer group" onclick="applyPreset('linear-gradient(to right, #c471f5, #fa71cd)')">
+                            <div class="h-24 rounded-lg bg-gradient-to-r from-purple-400 to-pink-400 shadow-sm group-hover:shadow-md transition-all"></div>
+                            <p class="text-xs text-center mt-2 text-gray-500 font-medium">Unicorn</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tip -->
+                <div class="bg-blue-50 rounded-xl p-4 flex gap-3 border border-blue-100">
+                    <div class="shrink-0 pt-0.5"><i class="fa-solid fa-lightbulb text-blue-500"></i></div>
+                    <div>
+                        <h4 class="text-sm font-bold text-blue-900 mb-1">Pro Tip</h4>
+                        <p class="text-sm text-blue-700">Gradients support transparency. Set a color to have 0% opacity to create fade-out effects or complex overlays for your images.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="lg:col-span-4 space-y-6">
+                <!-- About -->
+                <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+                    <h3 class="font-bold text-gray-900 mb-4">About this tool</h3>
+                    <p class="text-sm text-gray-500 mb-6 leading-relaxed">The Gradient Maker allows you to generate CSS code for colorful gradients. Customize colors, orientation, and opacity to create perfect backgrounds for your UI.</p>
+                    <div class="space-y-3">
+                        <div class="flex justify-between text-sm"><span class="text-gray-500">Version</span><span class="font-medium text-gray-900">2.1.0</span></div>
+                        <div class="flex justify-between text-sm"><span class="text-gray-500">Last Updated</span><span class="font-medium text-gray-900">Dec 04, 2023</span></div>
+                    </div>
+                </div>
+
+                <!-- Related -->
+                <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+                    <h3 class="font-bold text-gray-900 mb-4">Related Tools</h3>
+                    <div class="space-y-4">
+                        <a href="color-picker.html" class="flex gap-3 group">
+                            <div class="w-8 h-8 rounded bg-blue-100 text-blue-600 flex items-center justify-center shrink-0"><i class="fa-solid fa-eye-dropper text-xs"></i></div>
+                            <div><h4 class="text-sm font-bold text-gray-900 group-hover:text-blue-600">Color Picker</h4><p class="text-xs text-gray-500">HEX, RGB, HSL converter</p></div>
+                        </a>
+                        <a href="#" class="flex gap-3 group">
+                            <div class="w-8 h-8 rounded bg-orange-100 text-orange-600 flex items-center justify-center shrink-0"><i class="fa-solid fa-circle-half-stroke text-xs"></i></div>
+                            <div><h4 class="text-sm font-bold text-gray-900 group-hover:text-blue-600">Contrast Checker</h4><p class="text-xs text-gray-500">Accessibility test</p></div>
+                        </a>
+                        <a href="#" class="flex gap-3 group">
+                            <div class="w-8 h-8 rounded bg-green-100 text-green-600 flex items-center justify-center shrink-0"><i class="fa-solid fa-image text-xs"></i></div>
+                            <div><h4 class="text-sm font-bold text-gray-900 group-hover:text-blue-600">Image Color Picker</h4><p class="text-xs text-gray-500">Pick from image</p></div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- CTA -->
+                <div class="rounded-xl p-6 shadow-sm text-white bg-gradient-to-br from-blue-500 to-blue-700 relative overflow-hidden">
+                    <div class="relative z-10">
+                        <h3 class="font-bold text-lg mb-2">Need an API?</h3>
+                        <p class="text-blue-100 text-sm mb-4">Get programmatic access to all our color tools and palettes.</p>
+                        <button class="px-4 py-2 bg-white text-blue-600 text-sm font-bold rounded-lg shadow-sm hover:bg-blue-50 transition-colors">View Docs</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const preview = document.getElementById('gradientPreview');
+        const cssOutput = document.getElementById('cssOutput');
+        const directionInput = document.getElementById('directionInput');
+        const stopsContainer = document.getElementById('colorStops');
+
+        function updateGradient() {
+            const angle = directionInput.value;
+            // Collect stops
+            const stopEls = stopsContainer.querySelectorAll('div');
+            let stops = [];
+            stopEls.forEach(el => {
+                const color = el.querySelector('input[type="color"]').value;
+                const percent = el.querySelector('input[type="range"]').value;
+                el.querySelector('span').innerText = percent + '%';
+                stops.push(`${color} ${percent}%`);
+            });
+            
+            // Sort stops by percentage for correct CSS rendering if needed, but linear-gradient handles unsorted often. 
+            // Better to keep UI order or sort? Let's assume user order.
+            
+            const css = `background: linear-gradient(${angle}deg, ${stops.join(', ')});`;
+            preview.style = css;
+            cssOutput.innerText = css;
+        }
+
+        function copyCSS() {
+            navigator.clipboard.writeText(cssOutput.innerText);
+        }
+
+        function applyPreset(css) {
+            preview.style.background = css;
+            cssOutput.innerText = `background: ${css};`;
+            // Note: This simple preset logic doesn't update the individual controls (color pickers) 
+            // because parsing CSS gradient strings back to UI controls is complex.
+            // For MVP, we just update preview and output.
+        }
+
+        directionInput.addEventListener('input', updateGradient);
+        
+        // Init
+        updateGradient();
+    </script>
+</body>
+</html>

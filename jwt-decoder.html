@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JWT Decoder - Tool Center</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- CryptoJS for signature verification -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <style>body { font-family: 'Inter', sans-serif; background-color: #F9FAFB; }</style>
+</head>
+<body class="text-slate-900 antialiased min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-100 sticky top-0 z-50">
+        <div class="max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-3 cursor-pointer">
+                <div class="grid grid-cols-2 gap-0.5 w-6 h-6">
+                    <div class="bg-blue-600 rounded-[1px]"></div>
+                    <div class="bg-blue-600 rounded-[1px]"></div>
+                    <div class="bg-blue-600 rounded-[1px]"></div>
+                    <div class="bg-blue-600 rounded-[1px] opacity-50"></div>
+                </div>
+                <span class="font-bold text-lg tracking-tight text-gray-900">Tool Center</span>
+            </a>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-[1400px] mx-auto px-6 py-8 w-full">
+        <!-- Breadcrumbs -->
+        <div class="mb-6 flex items-center text-sm text-gray-500">
+            <a href="#" class="hover:text-blue-600 transition-colors"><i class="fa-solid fa-arrow-left mr-2"></i>Back to Developer Tools</a>
+            <span class="mx-3 text-gray-300">/</span>
+            <a href="index.html" class="hover:text-gray-700">Home</a>
+            <span class="mx-3 text-gray-300">/</span>
+            <span class="font-medium text-gray-900">JWT Decoder</span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Main Content -->
+            <div class="lg:col-span-8 space-y-6">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900 mb-3">JWT Decoder</h1>
+                    <p class="text-gray-500 leading-relaxed">Debug JWT tokens. Paste your token to view its header, payload, and signature. Understand the claims within your JSON Web Tokens securely.</p>
+                </div>
+
+                <!-- Input Card -->
+                <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                    <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100 bg-gray-50/50">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-key text-blue-600"></i>
+                            <span class="font-medium text-gray-700">Encoded Token</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <button onclick="pasteToken()" class="text-xs font-medium text-gray-500 hover:text-blue-600 flex items-center gap-1"><i class="fa-regular fa-paste"></i> Paste</button>
+                            <button onclick="clearToken()" class="text-xs font-medium text-gray-500 hover:text-red-600 flex items-center gap-1"><i class="fa-regular fa-trash-can"></i> Clear</button>
+                        </div>
+                    </div>
+                    <textarea id="jwtInput" class="w-full h-32 p-4 text-sm font-mono text-gray-800 placeholder-gray-400 bg-white focus:outline-none resize-y" placeholder="Paste your JWT here (e.g. eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...)"></textarea>
+                </div>
+
+                <!-- Decoded Token Section -->
+                <div id="decodedSection" class="hidden space-y-6">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fa-solid fa-code text-purple-600"></i>
+                        <h3 class="font-bold text-gray-900">Decoded Token</h3>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Header -->
+                        <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                            <div class="px-4 py-2 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
+                                <span class="text-xs font-bold text-gray-500 uppercase">HEADER: ALGORITHM & TYPE</span>
+                                <span class="text-[10px] font-bold bg-red-100 text-red-600 px-2 py-0.5 rounded">ALGORITHM</span>
+                            </div>
+                            <pre id="headerOutput" class="p-4 text-sm font-mono text-gray-700 overflow-x-auto whitespace-pre-wrap"></pre>
+                        </div>
+
+                        <!-- Payload -->
+                        <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                            <div class="px-4 py-2 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
+                                <span class="text-xs font-bold text-gray-500 uppercase">PAYLOAD: DATA</span>
+                                <span class="text-[10px] font-bold bg-purple-100 text-purple-600 px-2 py-0.5 rounded">DATA</span>
+                            </div>
+                            <pre id="payloadOutput" class="p-4 text-sm font-mono text-gray-700 overflow-x-auto whitespace-pre-wrap"></pre>
+                        </div>
+                    </div>
+
+                    <!-- Signature -->
+                    <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                        <div class="px-4 py-2 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
+                            <span class="text-xs font-bold text-gray-500 uppercase">VERIFY SIGNATURE</span>
+                            <span class="text-[10px] font-bold bg-blue-100 text-blue-600 px-2 py-0.5 rounded">SIGNATURE</span>
+                        </div>
+                        <div class="p-4 space-y-3">
+                            <div class="font-mono text-sm text-blue-600">
+                                HMACSHA256(<br>
+                                &nbsp;&nbsp;base64UrlEncode(header) + "." +<br>
+                                &nbsp;&nbsp;base64UrlEncode(payload),<br>
+                                &nbsp;&nbsp;<input type="text" id="secretInput" placeholder="your-256-bit-secret" class="bg-gray-50 border border-gray-200 rounded px-2 py-0.5 text-gray-600 w-48 focus:outline-none focus:border-blue-400"><br>
+                                )
+                            </div>
+                            <div class="bg-blue-50 rounded p-3 flex gap-2 items-start">
+                                <i class="fa-solid fa-circle-info text-blue-500 mt-0.5 text-xs"></i>
+                                <p class="text-xs text-blue-700">Signature verification requires the secret key on the server side.</p>
+                            </div>
+                            <div id="sigStatus" class="hidden text-xs font-bold"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Warning -->
+                <div class="bg-blue-50 rounded-xl p-4 flex gap-3 border border-blue-100">
+                    <div class="shrink-0 pt-0.5"><i class="fa-solid fa-lock text-blue-500"></i></div>
+                    <div>
+                        <h4 class="text-sm font-bold text-blue-900 mb-1">Security Warning</h4>
+                        <p class="text-sm text-blue-700">JWTs are Base64Url encoded, not encrypted. Do not store sensitive information like passwords in the payload unless you encrypt the token itself (JWE).</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="lg:col-span-4 space-y-6">
+                <!-- About -->
+                <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+                    <h3 class="font-bold text-gray-900 mb-4">About this tool</h3>
+                    <p class="text-sm text-gray-500 mb-6 leading-relaxed">This JWT Decoder allows you to decode JSON Web Tokens to inspect their headers and payloads. It helps in debugging authentication issues by verifying claim values and expiration times.</p>
+                    <div class="space-y-3">
+                        <div class="flex justify-between text-sm"><span class="text-gray-500">Standard</span><span class="font-medium text-gray-900">RFC 7519</span></div>
+                        <div class="flex justify-between text-sm"><span class="text-gray-500">Processing</span><span class="font-medium text-gray-900">Client-side</span></div>
+                    </div>
+                </div>
+
+                <!-- Related -->
+                <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+                    <h3 class="font-bold text-gray-900 mb-4">Related Tools</h3>
+                    <div class="space-y-4">
+                        <a href="json-formatter.html" class="flex gap-3 group">
+                            <div class="w-8 h-8 rounded bg-green-100 text-green-600 flex items-center justify-center shrink-0"><i class="fa-solid fa-code text-xs"></i></div>
+                            <div><h4 class="text-sm font-bold text-gray-900 group-hover:text-blue-600">JSON Formatter</h4><p class="text-xs text-gray-500">Beautify JSON</p></div>
+                        </a>
+                        <a href="base64-encoder.html" class="flex gap-3 group">
+                            <div class="w-8 h-8 rounded bg-yellow-100 text-yellow-600 flex items-center justify-center shrink-0"><i class="fa-solid fa-arrow-right-arrow-left text-xs"></i></div>
+                            <div><h4 class="text-sm font-bold text-gray-900 group-hover:text-blue-600">Base64 Encoder</h4><p class="text-xs text-gray-500">Decode/Encode</p></div>
+                        </a>
+                        <a href="#" class="flex gap-3 group">
+                            <div class="w-8 h-8 rounded bg-gray-100 text-gray-600 flex items-center justify-center shrink-0"><i class="fa-solid fa-fingerprint text-xs"></i></div>
+                            <div><h4 class="text-sm font-bold text-gray-900 group-hover:text-blue-600">Hash Generator</h4><p class="text-xs text-gray-500">MD5, SHA-256</p></div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- CTA -->
+                <div class="rounded-xl p-6 shadow-sm text-white bg-gradient-to-br from-blue-500 to-blue-700 relative overflow-hidden">
+                    <div class="relative z-10">
+                        <h3 class="font-bold text-lg mb-2">Need an API?</h3>
+                        <p class="text-blue-100 text-sm mb-4">Get programmatic access to all our developer tools and utilities.</p>
+                        <button class="px-4 py-2 bg-white text-blue-600 text-sm font-bold rounded-lg shadow-sm hover:bg-blue-50 transition-colors">View Docs</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const jwtInput = document.getElementById('jwtInput');
+        const headerOutput = document.getElementById('headerOutput');
+        const payloadOutput = document.getElementById('payloadOutput');
+        const decodedSection = document.getElementById('decodedSection');
+
+        function base64UrlDecode(str) {
+            str = str.replace(/-/g, '+').replace(/_/g, '/');
+            while (str.length % 4) {
+                str += '=';
+            }
+            return decodeURIComponent(escape(window.atob(str)));
+        }
+
+        function decodeJWT() {
+            const token = jwtInput.value.trim();
+            if (!token) {
+                decodedSection.classList.add('hidden');
+                return;
+            }
+
+            const parts = token.split('.');
+            if (parts.length !== 3) {
+                // Not a valid JWT structure
+                return;
+            }
+
+            try {
+                const header = JSON.parse(base64UrlDecode(parts[0]));
+                const payload = JSON.parse(base64UrlDecode(parts[1]));
+
+                headerOutput.textContent = JSON.stringify(header, null, 2);
+                payloadOutput.textContent = JSON.stringify(payload, null, 2);
+                decodedSection.classList.remove('hidden');
+
+                // Signature Logic (Placeholder for full verification)
+                // Real verification needs the secret. We just show inputs.
+
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        jwtInput.addEventListener('input', decodeJWT);
+
+        async function pasteToken() {
+            try {
+                const text = await navigator.clipboard.readText();
+                jwtInput.value = text;
+                decodeJWT();
+            } catch(e) {}
+        }
+
+        function clearToken() {
+            jwtInput.value = '';
+            decodedSection.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
