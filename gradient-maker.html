@@ -29,10 +29,10 @@
     <main class="flex-grow max-w-[1400px] mx-auto px-6 py-8 w-full">
         <!-- Breadcrumbs -->
         <div class="mb-6 flex items-center text-sm text-gray-500">
-            <a href="#" class="hover:text-blue-600 transition-colors"><i class="fa-solid fa-arrow-left mr-2"></i>Back to Design Tools</a>
-            <span class="mx-3 text-gray-300">/</span>
-            <a href="index.html" class="hover:text-gray-700">Home</a>
-            <span class="mx-3 text-gray-300">/</span>
+            <a href="index.html" class="hover:text-blue-600 transition-colors flex items-center gap-2">
+                <i class="fa-solid fa-house"></i> Home
+            </a>
+            <i class="fa-solid fa-chevron-right text-xs mx-3 text-gray-300"></i>
             <span class="font-medium text-gray-900">Gradient Maker</span>
         </div>
 
@@ -182,12 +182,35 @@
                     </div>
                 </div>
 
-                <!-- CTA -->
-                <div class="rounded-xl p-6 shadow-sm text-white bg-gradient-to-br from-blue-500 to-blue-700 relative overflow-hidden">
+                <!-- Tool Request Form -->
+                <div class="rounded-xl p-6 shadow-sm bg-gradient-to-br from-blue-600 to-indigo-700 text-white overflow-hidden relative">
                     <div class="relative z-10">
-                        <h3 class="font-bold text-lg mb-2">Need an API?</h3>
-                        <p class="text-blue-100 text-sm mb-4">Get programmatic access to all our color tools and palettes.</p>
-                        <button class="px-4 py-2 bg-white text-blue-600 text-sm font-bold rounded-lg shadow-sm hover:bg-blue-50 transition-colors">View Docs</button>
+                        <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-lightbulb text-yellow-300"></i> Request a Tool
+                        </h3>
+                        <form id="toolRequestForm" class="space-y-3">
+                            <div>
+                                <label class="block text-xs font-medium text-blue-100 mb-1">Tool Name *</label>
+                                <input type="text" name="toolName" required class="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-sm text-white placeholder-blue-200 focus:outline-none focus:bg-white/20 focus:border-white/40 transition-colors" placeholder="e.g. SQL Formatter">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-blue-100 mb-1">Description *</label>
+                                <textarea name="description" required rows="2" class="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-sm text-white placeholder-blue-200 focus:outline-none focus:bg-white/20 focus:border-white/40 transition-colors resize-none" placeholder="What should it do?"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-blue-100 mb-1">Features (Optional)</label>
+                                <input type="text" name="features" class="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-sm text-white placeholder-blue-200 focus:outline-none focus:bg-white/20 focus:border-white/40 transition-colors" placeholder="Specific requirements...">
+                            </div>
+                            <button type="submit" class="w-full py-2 bg-white text-blue-600 font-bold rounded-lg shadow-sm hover:bg-blue-50 transition-colors text-sm mt-2">
+                                Submit Request
+                            </button>
+                        </form>
+                        <div id="requestSuccess" class="hidden text-center py-8">
+                            <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">🎉</div>
+                            <h4 class="font-bold text-lg">Thank You!</h4>
+                            <p class="text-blue-100 text-sm mt-1">We've received your request.</p>
+                            <button onclick="resetRequestForm()" class="text-xs text-white underline mt-4 hover:text-blue-100">Submit another</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -234,6 +257,47 @@
 
         directionInput.addEventListener('input', updateGradient);
         
+        // Tool Request Form Logic
+        const requestForm = document.getElementById('toolRequestForm');
+        const successMsg = document.getElementById('requestSuccess');
+
+        if (requestForm) {
+            requestForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                // Anti-spam check (simple timestamp based)
+                const lastSubmit = localStorage.getItem('lastToolRequestTime');
+                if (lastSubmit && Date.now() - parseInt(lastSubmit) < 60000) {
+                    alert('Please wait a minute before submitting again.');
+                    return;
+                }
+
+                const formData = new FormData(requestForm);
+                const request = {
+                    toolName: formData.get('toolName'),
+                    description: formData.get('description'),
+                    features: formData.get('features'),
+                    date: new Date().toISOString()
+                };
+
+                // Save to local storage (Simulating backend)
+                const requests = JSON.parse(localStorage.getItem('toolRequests') || '[]');
+                requests.push(request);
+                localStorage.setItem('toolRequests', JSON.stringify(requests));
+                localStorage.setItem('lastToolRequestTime', Date.now().toString());
+
+                // UI Update
+                requestForm.classList.add('hidden');
+                successMsg.classList.remove('hidden');
+            });
+        }
+
+        function resetRequestForm() {
+            requestForm.reset();
+            requestForm.classList.remove('hidden');
+            successMsg.classList.add('hidden');
+        }
+
         // Init
         updateGradient();
     </script>
