@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Processor - Tool Center</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F9FAFB;
+        }
+    </style>
+</head>
+<body class="text-slate-900 antialiased min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-100 sticky top-0 z-50">
+        <div class="max-w-[1400px] mx-auto px-6 h-16 flex items-center">
+            <!-- Logo -->
+            <a href="index.html" class="flex items-center gap-3 cursor-pointer">
+                <div class="grid grid-cols-2 gap-0.5 w-6 h-6">
+                    <div class="bg-blue-600 rounded-[1px]"></div>
+                    <div class="bg-blue-600 rounded-[1px]"></div>
+                    <div class="bg-blue-600 rounded-[1px]"></div>
+                    <div class="bg-blue-600 rounded-[1px] opacity-50"></div>
+                </div>
+                <span class="font-bold text-lg tracking-tight text-gray-900">Tool Center</span>
+            </a>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-[1400px] mx-auto px-6 py-8 w-full">
+        
+        <!-- Breadcrumbs -->
+        <div class="mb-6 flex items-center text-sm text-gray-500">
+            <a href="index.html" class="hover:text-blue-600 transition-colors flex items-center gap-2">
+                <i class="fa-solid fa-house"></i> Home
+            </a>
+            <i class="fa-solid fa-chevron-right text-xs mx-3 text-gray-300"></i>
+            <span class="font-medium text-gray-900">Image Processor</span>
+        </div>
+
+        <!-- Title & Description -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-3">Image Processor</h1>
+            <p class="text-gray-500 leading-relaxed">
+                Modify image pixels and dimensions, crop, compress, and process photos for exams and ID documents.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Main Content (Left Column) -->
+            <div class="lg:col-span-8 space-y-6">
+                
+                <!-- Upload Container -->
+                <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+                    <div class="flex items-center gap-2 mb-4">
+                        <i class="fa-solid fa-cloud-arrow-up text-blue-600"></i>
+                        <h2 class="font-bold text-gray-900 text-sm">Upload Image</h2>
+                    </div>
+
+                    <div id="uploadArea" class="border-2 border-dashed border-gray-200 rounded-xl bg-gray-50/50 p-8 text-center transition-all hover:border-blue-400 hover:bg-blue-50/10">
+                        <!-- Initial State -->
+                        <div id="uploadPlaceholder" class="py-8">
+                            <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                            </div>
+                            <button onclick="document.getElementById('fileInput').click()" class="px-6 py-2.5 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors mb-6 flex items-center gap-2 mx-auto">
+                                <i class="fa-solid fa-plus"></i> Select and Upload File
+                            </button>
+                            <input type="file" id="fileInput" class="hidden" accept="image/gif, image/jpeg, image/jpg, image/png, image/webp">
+                            
+                            <div class="bg-white border border-gray-100 rounded-lg p-4 max-w-md mx-auto text-left text-xs text-gray-500 space-y-2 shadow-sm">
+                                <div class="flex items-center gap-2">
+                                    <i class="fa-solid fa-circle-check text-green-500"></i>
+                                    <span>Maximum file size: <span class="font-bold text-gray-700">5MB</span></span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <i class="fa-solid fa-circle-check text-green-500"></i>
+                                    <span>Supported formats: <span class="font-bold text-gray-700">GIF, JPEG, JPG, PNG</span></span>
+                                </div>
+                                <div class="flex items-center gap-2 items-start">
+                                    <i class="fa-solid fa-circle-check text-green-500 mt-0.5"></i>
+                                    <span>Filenames must not contain Chinese characters or special symbols (English or numbers only)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Preview State -->
+                        <div id="previewContainer" class="hidden relative">
+                            <div class="relative inline-block border border-blue-200 rounded-lg shadow-sm overflow-hidden bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiIgZmlsbC1vcGFjaXR5PSIwLjA1Ij48cmVjdCB3aWR0aD0iOCIgaGVpZ2h0PSI4IiB4PSIwIiB5PSIwIi8+PHJlY3Qgd2lkdGg9IjgiIGhlaWdodD0iOCIgeD0iOCIgeT0iOCIvPjwvc3ZnPg==')]">
+                                <canvas id="imageCanvas" class="max-w-full max-h-[500px]"></canvas>
+                                <div class="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded font-mono" id="imageDimensionsBadge">
+                                    0 x 0 px
+                                </div>
+                            </div>
+                            <button onclick="resetUpload()" class="absolute top-0 right-0 -mt-2 -mr-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 shadow-md">
+                                <i class="fa-solid fa-xmark text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resize Image -->
+                <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+                    <div class="flex items-center gap-2 mb-4">
+                        <i class="fa-regular fa-image text-blue-600"></i>
+                        <h2 class="font-bold text-gray-900 text-sm">Resize Image</h2>
+                    </div>
+                    
+                    <div class="flex gap-4 mb-4">
+                        <button onclick="zoomCanvas(0.9)" class="flex-1 py-2 bg-gray-100 text-gray-700 text-xs font-bold rounded hover:bg-gray-200 transition-colors">
+                            <i class="fa-solid fa-magnifying-glass-minus mr-1"></i> Zoom Out
+                        </button>
+                        <button onclick="zoomCanvas(1.1)" class="flex-1 py-2 bg-gray-100 text-gray-700 text-xs font-bold rounded hover:bg-gray-200 transition-colors">
+                            <i class="fa-solid fa-magnifying-glass-plus mr-1"></i> Zoom In
+                        </button>
+                    </div>
+
+                    <div class="flex items-end gap-4">
+                        <div class="flex-1">
+                            <label class="block text-xs font-bold text-gray-500 mb-1 uppercase">Width (px)</label>
+                            <input type="number" id="resizeWidth" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                        </div>
+                        <div class="flex-1">
+                            <label class="block text-xs font-bold text-gray-500 mb-1 uppercase">Height (px)</label>
+                            <div class="relative">
+                                <input type="number" id="resizeHeight" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                                <div class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer" onclick="toggleAspectRatio()" title="Lock Aspect Ratio">
+                                    <i class="fa-solid fa-link" id="aspectRatioIcon"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <button onclick="applyResize()" class="px-6 py-2 bg-white border border-gray-200 text-gray-700 text-xs font-bold rounded-lg hover:bg-gray-50 transition-colors h-[38px] flex items-center gap-2">
+                            <i class="fa-solid fa-check"></i> Confirm Modification
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Crop Image -->
+                <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+                    <div class="flex items-center gap-2 mb-4">
+                        <i class="fa-solid fa-crop-simple text-blue-600"></i>
+                        <h2 class="font-bold text-gray-900 text-sm">Change Dimensions (Crop)</h2>
+                    </div>
+
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <button onclick="setCropPreset(295, 413)" class="px-3 py-1.5 border border-gray-200 rounded-full text-xs text-gray-600 hover:border-blue-500 hover:text-blue-600 transition-colors">1-inch</button>
+                        <button onclick="setCropPreset(413, 579)" class="px-3 py-1.5 border border-gray-200 rounded-full text-xs text-gray-600 hover:border-blue-500 hover:text-blue-600 transition-colors">2-inch</button>
+                        <button onclick="setCropPreset(500, 500)" class="px-3 py-1.5 border border-gray-200 rounded-full text-xs text-gray-600 hover:border-blue-500 hover:text-blue-600 transition-colors">Square</button>
+                        <button onclick="setCropPreset(413, 531)" class="px-3 py-1.5 border border-gray-200 rounded-full text-xs text-gray-600 hover:border-blue-500 hover:text-blue-600 transition-colors">Civil Servant</button>
+                        <button onclick="setCropPreset(358, 441)" class="px-3 py-1.5 border border-gray-200 rounded-full text-xs text-gray-600 hover:border-blue-500 hover:text-blue-600 transition-colors">Common ID</button>
+                    </div>
+
+                    <div class="flex items-end gap-4">
+                        <div class="flex-grow flex items-center gap-2 border border-gray-200 rounded-lg px-3 py-2 bg-white">
+                            <input type="number" id="cropWidth" placeholder="W" class="w-full text-sm outline-none text-center">
+                            <span class="text-gray-400">×</span>
+                            <input type="number" id="cropHeight" placeholder="H" class="w-full text-sm outline-none text-center">
+                        </div>
+                        <button onclick="applyCrop()" class="px-6 py-2 bg-white border border-gray-200 text-gray-700 text-xs font-bold rounded-lg hover:bg-gray-50 transition-colors h-[38px] flex items-center gap-2">
+                            <i class="fa-solid fa-check"></i> Confirm Modification
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Compress -->
+                <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+                    <div class="flex items-center gap-2 mb-4">
+                        <i class="fa-solid fa-compress text-blue-600"></i>
+                        <h2 class="font-bold text-gray-900 text-sm">Compress File Size</h2>
+                    </div>
+
+                    <div class="flex items-end gap-4">
+                        <div class="flex-grow">
+                            <label class="block text-xs font-bold text-gray-500 mb-1 uppercase">Target Size (KB)</label>
+                            <div class="relative">
+                                <input type="number" id="targetSize" placeholder="e.g. 50" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                                <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">KB</span>
+                            </div>
+                            <p class="text-[10px] text-gray-400 mt-1" id="currentSizeDisplay">Original size: 0 MB</p>
+                        </div>
+                        <button onclick="applyCompression()" class="px-6 py-2 bg-white border border-gray-200 text-gray-700 text-xs font-bold rounded-lg hover:bg-gray-50 transition-colors h-[38px] flex items-center gap-2">
+                            <i class="fa-solid fa-check"></i> Confirm Modification
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Download -->
+                <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+                    <div class="flex items-center gap-2 mb-4">
+                        <i class="fa-solid fa-download text-green-600"></i>
+                        <h2 class="font-bold text-gray-900 text-sm">Save / Download</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Desktop -->
+                        <div class="border border-gray-100 rounded-xl p-4 bg-gray-50/50">
+                            <div class="flex items-start gap-3 mb-4">
+                                <div class="w-8 h-8 bg-white rounded shadow-sm flex items-center justify-center text-gray-600">
+                                    <i class="fa-solid fa-desktop"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-sm text-gray-900">Desktop</h3>
+                                    <p class="text-[10px] text-gray-500">Right click or use button</p>
+                                </div>
+                            </div>
+                            <button onclick="downloadImage()" class="w-full py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition-colors text-sm flex items-center justify-center gap-2 shadow-sm">
+                                <i class="fa-solid fa-download"></i> Download Image
+                            </button>
+                        </div>
+
+                        <!-- Mobile -->
+                        <div class="border border-gray-100 rounded-xl p-4 bg-gray-50/50">
+                            <div class="flex items-start gap-3 mb-4">
+                                <div class="w-8 h-8 bg-white rounded shadow-sm flex items-center justify-center text-gray-600">
+                                    <i class="fa-solid fa-mobile-screen"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-sm text-gray-900">Mobile</h3>
+                                    <p class="text-[10px] text-gray-500">Scan QR code to download</p>
+                                </div>
+                            </div>
+                            <div class="flex justify-center">
+                                <div class="w-16 h-16 bg-white p-1 rounded shadow-sm">
+                                    <!-- Placeholder QR -->
+                                    <div class="w-full h-full bg-gray-900 flex items-center justify-center text-white text-[8px]">QR CODE</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Sidebar (Right Column) -->
+            <div class="lg:col-span-4 space-y-6">
+                
+                <!-- About Card -->
+                <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+                    <h3 class="font-bold text-gray-900 mb-4">About this tool</h3>
+                    <p class="text-sm text-gray-500 mb-4 leading-relaxed">
+                        The Image Processor is a comprehensive utility for all your photo editing needs. Whether you need to resize dimensions, crop for specific ID requirements, or compress file sizes for upload limits, this tool handles it securely in your browser.
+                    </p>
+                    
+                    <div class="space-y-2 mt-6">
+                        <div class="flex justify-between text-xs">
+                            <span class="text-gray-500">Processing</span>
+                            <span class="font-bold text-gray-900">Client-side (Private)</span>
+                        </div>
+                        <div class="flex justify-between text-xs">
+                            <span class="text-gray-500">Formats</span>
+                            <span class="font-bold text-gray-900">JPG, PNG, WEBP</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Related Tools Card -->
+                <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+                    <h3 class="font-bold text-gray-900 mb-4">Related Tools</h3>
+                    <div class="space-y-4">
+                        <div class="flex gap-3 group cursor-not-allowed opacity-70">
+                            <div class="w-10 h-10 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-wand-magic"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-gray-900">Background Remover</h4>
+                                <p class="text-[10px] text-gray-500">AI-powered removal</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3 group cursor-not-allowed opacity-70">
+                            <div class="w-10 h-10 rounded-full bg-orange-50 text-orange-600 flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-arrow-right-arrow-left"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-gray-900">Image Converter</h4>
+                                <p class="text-[10px] text-gray-500">Convert to PNG/JPG</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3 group cursor-not-allowed opacity-70">
+                            <div class="w-10 h-10 rounded-full bg-pink-50 text-pink-600 flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-id-card"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-gray-900">Passport Photo Maker</h4>
+                                <p class="text-[10px] text-gray-500">Standard ID sizes</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Developer API -->
+                <div class="bg-blue-600 rounded-xl p-6 shadow-lg text-white overflow-hidden relative">
+                    <div class="relative z-10">
+                        <h3 class="font-bold text-lg mb-2">Developer API</h3>
+                        <p class="text-blue-100 text-xs leading-relaxed mb-4">
+                            Integrate image processing capabilities directly into your applications.
+                        </p>
+                        <button class="px-4 py-2 bg-white text-blue-600 text-xs font-bold rounded-lg hover:bg-blue-50 transition-colors">
+                            View API Docs
+                        </button>
+                    </div>
+                    <div class="absolute -bottom-6 -right-6 w-24 h-24 bg-blue-500 rounded-full opacity-50"></div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const uploadPlaceholder = document.getElementById('uploadPlaceholder');
+        const previewContainer = document.getElementById('previewContainer');
+        const canvas = document.getElementById('imageCanvas');
+        const ctx = canvas.getContext('2d');
+        const badge = document.getElementById('imageDimensionsBadge');
+        const currentSizeDisplay = document.getElementById('currentSizeDisplay');
+
+        // Resize Inputs
+        const resizeWidth = document.getElementById('resizeWidth');
+        const resizeHeight = document.getElementById('resizeHeight');
+        let aspectRatio = 1;
+        let isAspectRatioLocked = true;
+
+        // State
+        let originalImage = null;
+        let currentImage = null;
+        let currentFileType = 'image/jpeg';
+        let currentFileName = 'processed-image.jpg';
+
+        // --- Event Listeners ---
+        fileInput.addEventListener('change', handleFileSelect);
+        
+        // Drag & Drop
+        const uploadArea = document.getElementById('uploadArea');
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('border-blue-400', 'bg-blue-50');
+        });
+        uploadArea.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('border-blue-400', 'bg-blue-50');
+        });
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('border-blue-400', 'bg-blue-50');
+            if (e.dataTransfer.files.length) {
+                handleFile(e.dataTransfer.files[0]);
+            }
+        });
+
+        // --- Logic ---
+
+        function handleFileSelect(e) {
+            if (e.target.files.length) {
+                handleFile(e.target.files[0]);
+            }
+        }
+
+        function handleFile(file) {
+            if (!file.type.startsWith('image/')) {
+                alert('Please upload an image file.');
+                return;
+            }
+            if (file.size > 5 * 1024 * 1024) {
+                alert('File size exceeds 5MB.');
+                return;
+            }
+
+            currentFileType = file.type;
+            currentFileName = file.name;
+            currentSizeDisplay.textContent = `Original size: ${(file.size / 1024 / 1024).toFixed(2)} MB`;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    originalImage = img;
+                    currentImage = img;
+                    renderCanvas(img);
+                    updateDimensions(img.width, img.height);
+                    
+                    uploadPlaceholder.classList.add('hidden');
+                    previewContainer.classList.remove('hidden');
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function renderCanvas(img) {
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0);
+            badge.textContent = `${img.width} x ${img.height} px`;
+        }
+
+        function updateDimensions(w, h) {
+            resizeWidth.value = w;
+            resizeHeight.value = h;
+            aspectRatio = w / h;
+        }
+
+        function resetUpload() {
+            fileInput.value = '';
+            uploadPlaceholder.classList.remove('hidden');
+            previewContainer.classList.add('hidden');
+            originalImage = null;
+            currentImage = null;
+        }
+
+        // --- Resize ---
+        resizeWidth.addEventListener('input', () => {
+            if (isAspectRatioLocked && resizeWidth.value) {
+                resizeHeight.value = Math.round(resizeWidth.value / aspectRatio);
+            }
+        });
+
+        resizeHeight.addEventListener('input', () => {
+            if (isAspectRatioLocked && resizeHeight.value) {
+                resizeWidth.value = Math.round(resizeHeight.value * aspectRatio);
+            }
+        });
+
+        function toggleAspectRatio() {
+            isAspectRatioLocked = !isAspectRatioLocked;
+            const icon = document.getElementById('aspectRatioIcon');
+            if (isAspectRatioLocked) {
+                icon.classList.remove('fa-link-slash');
+                icon.classList.add('fa-link');
+                icon.parentElement.classList.remove('text-red-400');
+                icon.parentElement.classList.add('text-gray-400');
+                // Re-sync
+                if (resizeWidth.value) resizeHeight.value = Math.round(resizeWidth.value / aspectRatio);
+            } else {
+                icon.classList.remove('fa-link');
+                icon.classList.add('fa-link-slash');
+                icon.parentElement.classList.remove('text-gray-400');
+                icon.parentElement.classList.add('text-red-400');
+            }
+        }
+
+        function applyResize() {
+            if (!currentImage) return;
+            const w = parseInt(resizeWidth.value);
+            const h = parseInt(resizeHeight.value);
+            if (!w || !h) return;
+
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = w;
+            tempCanvas.height = h;
+            const tCtx = tempCanvas.getContext('2d');
+            tCtx.drawImage(currentImage, 0, 0, w, h);
+
+            updateCurrentImageFromCanvas(tempCanvas);
+            showToast('Image resized successfully');
+        }
+
+        function zoomCanvas(scale) {
+            // Visual zoom only? Or resize? 
+            // Usually "Zoom" in this context implies resizing or just view. 
+            // Given "Resize Image" section, let's assume it just scales the Width/Height inputs for user convenience?
+            // Or maybe visual zoom. Let's make it modify the input values for Resize.
+            const w = parseInt(resizeWidth.value) || (currentImage ? currentImage.width : 0);
+            if (!w) return;
+            const newW = Math.round(w * scale);
+            resizeWidth.value = newW;
+            // Trigger input event to sync height
+            resizeWidth.dispatchEvent(new Event('input'));
+        }
+
+        // --- Crop ---
+        function setCropPreset(w, h) {
+            document.getElementById('cropWidth').value = w;
+            document.getElementById('cropHeight').value = h;
+        }
+
+        function applyCrop() {
+            if (!currentImage) return;
+            const w = parseInt(document.getElementById('cropWidth').value);
+            const h = parseInt(document.getElementById('cropHeight').value);
+            if (!w || !h) {
+                alert('Please enter crop dimensions');
+                return;
+            }
+
+            // Center crop logic
+            const srcW = currentImage.width;
+            const srcH = currentImage.height;
+            const startX = (srcW - w) / 2;
+            const startY = (srcH - h) / 2;
+
+            // Note: If crop is larger than image, we might need to scale or pad.
+            // For simplicity: Scale image to cover, then crop center? Or just simple crop (might show empty if too big)?
+            // Let's implement: Resize image to fit the crop box (Cover), then crop center.
+            // This is "smart crop" usually expected for ID photos.
+            
+            // Calculate scale ratio to cover
+            const scaleX = w / srcW;
+            const scaleY = h / srcH;
+            const scale = Math.max(scaleX, scaleY); // Cover
+
+            const scaledW = srcW * scale;
+            const scaledH = srcH * scale;
+
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = w;
+            tempCanvas.height = h;
+            const tCtx = tempCanvas.getContext('2d');
+
+            // Draw scaled image centered
+            const drawX = (w - scaledW) / 2;
+            const drawY = (h - scaledH) / 2;
+            
+            tCtx.drawImage(currentImage, 0, 0, srcW, srcH, drawX, drawY, scaledW, scaledH);
+
+            updateCurrentImageFromCanvas(tempCanvas);
+            showToast('Image cropped successfully');
+        }
+
+        // --- Compress ---
+        function applyCompression() {
+            if (!currentImage) return;
+            const targetKB = parseInt(document.getElementById('targetSize').value);
+            if (!targetKB) return;
+
+            // Iterative compression (Basic implementation)
+            let quality = 0.9;
+            let dataUrl = canvas.toDataURL('image/jpeg', quality);
+            let sizeKB = dataUrl.length * 0.75 / 1024; // Approx size
+
+            // Simple loop to reduce quality
+            // Note: This only affects the DOWNLOAD, not the canvas pixels. 
+            // So we store the compressed dataUrl for download.
+            // Canvas always shows raw pixels.
+            
+            // To visualize "compression", we could reload the compressed image into canvas, 
+            // but that might look ugly. 
+            // Let's just update the download logic to use this quality.
+            // However, "Confirm Modification" implies changing state.
+            // Let's degrade the image on canvas to reflect compression artifacts if possible, 
+            // or just save the "quality" setting.
+            
+            // For this demo: Try to hit target size by reloading the jpeg
+            while (sizeKB > targetKB && quality > 0.1) {
+                quality -= 0.1;
+                dataUrl = canvas.toDataURL('image/jpeg', quality);
+                sizeKB = dataUrl.length * 0.75 / 1024;
+            }
+
+            const img = new Image();
+            img.onload = () => {
+                currentImage = img;
+                renderCanvas(img);
+                currentSizeDisplay.textContent = `Compressed size: ~${sizeKB.toFixed(2)} KB (Quality: ${(quality*100).toFixed(0)}%)`;
+                showToast(`Compressed to ~${sizeKB.toFixed(0)} KB`);
+            };
+            img.src = dataUrl;
+        }
+
+        // --- Helpers ---
+        function updateCurrentImageFromCanvas(sourceCanvas) {
+            const dataUrl = sourceCanvas.toDataURL(currentFileType);
+            const img = new Image();
+            img.onload = () => {
+                currentImage = img;
+                renderCanvas(img);
+                updateDimensions(img.width, img.height);
+                currentSizeDisplay.textContent = `Current size: ~${(dataUrl.length * 0.75 / 1024).toFixed(2)} KB`;
+            };
+            img.src = dataUrl;
+        }
+
+        function downloadImage() {
+            if (!currentImage) return;
+            const link = document.createElement('a');
+            link.download = 'processed_' + currentFileName;
+            link.href = canvas.toDataURL(currentFileType);
+            link.click();
+            showToast('Download started');
+        }
+
+        function showToast(msg) {
+            // Simple alert fallback or custom toast if available
+            // Reuse toast logic from other files if we want to be consistent
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-5 right-5 bg-green-600 text-white px-4 py-2 rounded shadow-lg text-sm z-50 animate-bounce';
+            toast.innerText = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+    </script>
+</body>
+</html>
