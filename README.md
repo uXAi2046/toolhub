@@ -43,7 +43,12 @@ The project includes a lightweight admin interface for managing tool requests.
 
 ## 📦 Usage
 
-Since this is a static site, you can run it directly:
+### Quick Start
+You can access the live version directly at:  
+👉 **[https://uxai2046.github.io/toolhub](https://uxai2046.github.io/toolhub)**
+
+### Local Development
+Since this is a static site, you can run it locally:
 
 1. Clone the repository:
    ```bash
