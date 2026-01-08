@@ -302,6 +302,19 @@
                 iconColor: "text-blue-600",
                 logoBg: "bg-blue-50",
                 link: "image-processor.html"
+            },
+            {
+                id: 25,
+                name: "BlockSlice",
+                vendor: "Tool Center",
+                category: "Design",
+                categoryStyle: "bg-purple-50 text-purple-700",
+                description: "Split images into smaller grid blocks. Create grid posts for Instagram, panoramic carousels, or meme formats.",
+                meta: "v1.0.0",
+                icon: "fa-table-cells",
+                iconColor: "text-purple-600",
+                logoBg: "bg-purple-50",
+                link: "https://traememe-cutrz6l.vercel.app/"
             }
         ];
 
@@ -369,7 +382,7 @@
                 } else if (tool.name === 'Notion') {
                      iconHtml = `<span class="text-xl font-bold text-white">N</span>`;
                 } else {
-                     iconHtml = `<i class="${tool.name === 'Zoom' || tool.name === 'VS Code' || tool.name === 'JSON Formatter' || tool.name === 'Base64 Encoder' || tool.name === 'URL Parser' || tool.name === 'Color Picker' || tool.name === 'Unix Timestamp' || tool.name === 'JSON Diff' || tool.name === 'JWT Decoder' || tool.name === 'Gradient Maker' || tool.name === 'MD5 Generator' || tool.name === 'XML Formatter' || tool.name === 'JSON to Markdown' || tool.name === 'Extract URLs' || tool.name === 'Clipboard Viewer' || tool.name === 'Paste HTML Subset' || tool.name === 'Paste Rich Text' || tool.name === 'Image Processor' ? 'fa-solid' : 'fa-brands'} ${tool.icon} text-2xl ${tool.iconColor}"></i>`;
+                     iconHtml = `<i class="${tool.name === 'Zoom' || tool.name === 'VS Code' || tool.name === 'JSON Formatter' || tool.name === 'Base64 Encoder' || tool.name === 'URL Parser' || tool.name === 'Color Picker' || tool.name === 'Unix Timestamp' || tool.name === 'JSON Diff' || tool.name === 'JWT Decoder' || tool.name === 'Gradient Maker' || tool.name === 'MD5 Generator' || tool.name === 'XML Formatter' || tool.name === 'JSON to Markdown' || tool.name === 'Extract URLs' || tool.name === 'Clipboard Viewer' || tool.name === 'Paste HTML Subset' || tool.name === 'Paste Rich Text' || tool.name === 'Image Processor' || tool.name === 'BlockSlice' ? 'fa-solid' : 'fa-brands'} ${tool.icon} text-2xl ${tool.iconColor}"></i>`;
                 }
 
                 // Trello specifics
