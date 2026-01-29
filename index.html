@@ -29,7 +29,7 @@
 
     <!-- Header -->
     <header class="bg-white border-b border-gray-100 sticky top-0 z-50">
-        <div class="max-w-[1400px] mx-auto px-6 h-16 flex items-center">
+        <div class="max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">
             <!-- Logo -->
             <div class="flex items-center gap-3 cursor-pointer" onclick="window.location.href='index.html'">
                 <div class="grid grid-cols-2 gap-0.5 w-6 h-6">
@@ -38,7 +38,15 @@
                     <div class="bg-blue-600 rounded-[1px]"></div>
                     <div class="bg-blue-600 rounded-[1px] opacity-50"></div>
                 </div>
-                <span class="font-bold text-lg tracking-tight text-gray-900">Tool Center</span>
+                <span class="font-bold text-lg tracking-tight text-gray-900" data-i18n="title">Tool Center</span>
+            </div>
+            
+            <!-- Language Switcher -->
+            <div class="flex items-center gap-2">
+                <button id="langBtn" class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors">
+                    <i class="fa-solid fa-language"></i>
+                    <span id="currentLang">EN</span>
+                </button>
             </div>
         </div>
     </header>
@@ -47,8 +55,8 @@
         
         <!-- Hero Section -->
         <div class="mb-10 text-center">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 tracking-tight">Discover Your Toolkit</h1>
-            <p class="text-lg text-gray-500 mx-auto">Access the complete suite of tools designed to enhance your daily workflow and productivity.</p>
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 tracking-tight" data-i18n="hero.title">Discover Your Toolkit</h1>
+            <p class="text-lg text-gray-500 mx-auto" data-i18n="hero.subtitle">Access the complete suite of tools designed to enhance your daily workflow and productivity.</p>
         </div>
 
         <!-- Search & Filter Section -->
@@ -60,7 +68,7 @@
                 </div>
                 <input type="text" id="searchInput" 
                     class="block w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm transition-all" 
-                    placeholder="Search for a tool by name, category, or keyword...">
+                    data-i18n-placeholder="search.placeholder">
             </div>
 
             <!-- Category Filters -->
@@ -76,7 +84,7 @@
 
         <!-- Load More Button -->
         <div class="mt-12 flex justify-center">
-            <button class="px-8 py-3 bg-white border border-gray-200 text-gray-600 font-medium rounded-full shadow-sm hover:bg-gray-50 hover:text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200">
+            <button class="px-8 py-3 bg-white border border-gray-200 text-gray-600 font-medium rounded-full shadow-sm hover:bg-gray-50 hover:text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-200" data-i18n="loadMore">
                 Load More Tools
             </button>
         </div>
@@ -84,7 +92,155 @@
     </main>
 
     <script>
-        // Data Configuration
+        // ==================== Internationalization (i18n) ====================
+        const translations = {
+            en: {
+                title: 'Tool Center',
+                'hero.title': 'Discover Your Toolkit',
+                'hero.subtitle': 'Access the complete suite of tools designed to enhance your daily workflow and productivity.',
+                'search.placeholder': 'Search for a tool by name, category, or keyword...',
+                loadMore: 'Load More Tools',
+                'category.all': 'All Tools',
+                'category.development': 'Development',
+                'category.design': 'Design',
+                'category.productivity': 'Productivity',
+                'category.communication': 'Communication',
+                'category.analytics': 'Analytics',
+                'noTools': 'No tools found matching your criteria.',
+                'tool.json-formatter.name': 'JSON Formatter',
+                'tool.json-formatter.desc': 'Minify or beautify your JSON strings with proper indentation to make them easier to read and debug.',
+                'tool.timestamp-converter.name': 'Unix Timestamp',
+                'tool.timestamp-converter.desc': 'Convert Unix timestamps to human-readable dates and vice-versa.',
+                'tool.color-picker.name': 'Color Picker',
+                'tool.color-picker.desc': 'Convert HEX, RGB, HSL values and browse color palettes.',
+                'tool.base64-encoder.name': 'Base64 Encoder',
+                'tool.base64-encoder.desc': 'Encode and decode data to Base64 format securely.',
+                'tool.url-parser.name': 'URL Parser',
+                'tool.url-parser.desc': 'Parse, analyze and edit URL parameters efficiently.',
+                'tool.json-diff.name': 'JSON Diff',
+                'tool.json-diff.desc': 'Compare two JSON files to identify differences.',
+                'tool.jwt-decoder.name': 'JWT Decoder',
+                'tool.jwt-decoder.desc': 'Debug JWT tokens and view claims securely.',
+                'tool.gradient-maker.name': 'Gradient Maker',
+                'tool.gradient-maker.desc': 'Create beautiful CSS gradients for your UI projects.',
+                'tool.md5-generator.name': 'MD5 Generator',
+                'tool.md5-generator.desc': 'Create MD5 hashes securely from any string input.',
+                'tool.xml-formatter.name': 'XML Formatter',
+                'tool.xml-formatter.desc': 'Beautify, format, and minify XML data.',
+                'tool.json-to-markdown.name': 'JSON to Markdown',
+                'tool.json-to-markdown.desc': 'Convert transcript JSON structures into clean, readable Markdown format.',
+                'tool.url-extractor.name': 'Extract URLs',
+                'tool.url-extractor.desc': 'Pull a list of links (href attributes) from any pasted HTML content.',
+                'tool.clipboard-viewer.name': 'Clipboard Viewer',
+                'tool.clipboard-viewer.desc': 'Debug everything stored in your clipboard efficiently.',
+                'tool.html-sanitizer.name': 'Paste HTML Subset',
+                'tool.html-sanitizer.desc': 'See which tags survive HTML sanitization and ensure your content is safe.',
+                'tool.rich-text-inspector.name': 'Paste Rich Text',
+                'tool.rich-text-inspector.desc': 'Inspect HTML and plain text on your clipboard instantly.',
+                'tool.image-processor.name': 'Image Processor',
+                'tool.image-processor.desc': 'Modify image pixels, dimensions, crop, compress and process photos for ID documents.',
+                'tool.blockslice.name': 'BlockSlice',
+                'tool.blockslice.desc': 'Split images into smaller grid blocks. Create grid posts for Instagram, panoramic carousels, or meme formats.'
+            },
+            zh: {
+                title: '工具中心',
+                'hero.title': '发现你的工具箱',
+                'hero.subtitle': '访问完整的工具套件，提升你的日常工作流程和生产力。',
+                'search.placeholder': '按名称、类别或关键词搜索工具...',
+                loadMore: '加载更多工具',
+                'category.all': '全部工具',
+                'category.development': '开发',
+                'category.design': '设计',
+                'category.productivity': '生产力',
+                'category.communication': '通讯',
+                'category.analytics': '分析',
+                'noTools': '未找到符合条件的工具。',
+                'tool.json-formatter.name': 'JSON 格式化',
+                'tool.json-formatter.desc': '压缩或美化 JSON 字符串，使其更易于阅读和调试。',
+                'tool.timestamp-converter.name': 'Unix 时间戳',
+                'tool.timestamp-converter.desc': '将 Unix 时间戳转换为可读日期，反之亦然。',
+                'tool.color-picker.name': '颜色选择器',
+                'tool.color-picker.desc': '转换 HEX、RGB、HSL 值并浏览调色板。',
+                'tool.base64-encoder.name': 'Base64 编码',
+                'tool.base64-encoder.desc': '安全地编码和解码 Base64 格式数据。',
+                'tool.url-parser.name': 'URL 解析器',
+                'tool.url-parser.desc': '高效解析、分析和编辑 URL 参数。',
+                'tool.json-diff.name': 'JSON 差异对比',
+                'tool.json-diff.desc': '比较两个 JSON 文件以识别差异。',
+                'tool.jwt-decoder.name': 'JWT 解码器',
+                'tool.jwt-decoder.desc': '安全地调试 JWT 令牌并查看声明。',
+                'tool.gradient-maker.name': '渐变生成器',
+                'tool.gradient-maker.desc': '为你的 UI 项目创建漂亮的 CSS 渐变效果。',
+                'tool.md5-generator.name': 'MD5 生成器',
+                'tool.md5-generator.desc': '从任何字符串输入安全地创建 MD5 哈希。',
+                'tool.xml-formatter.name': 'XML 格式化',
+                'tool.xml-formatter.desc': '美化、格式化和压缩 XML 数据。',
+                'tool.json-to-markdown.name': 'JSON 转 Markdown',
+                'tool.json-to-markdown.desc': '将 JSON 结构转换为清晰可读的 Markdown 格式。',
+                'tool.url-extractor.name': '提取 URL',
+                'tool.url-extractor.desc': '从任何粘贴的 HTML 内容中提取链接列表（href 属性）。',
+                'tool.clipboard-viewer.name': '剪贴板查看器',
+                'tool.clipboard-viewer.desc': '高效调试剪贴板中存储的所有内容。',
+                'tool.html-sanitizer.name': 'HTML 清理',
+                'tool.html-sanitizer.desc': '查看哪些标签通过 HTML 清理并确保内容安全。',
+                'tool.rich-text-inspector.name': '富文本检查',
+                'tool.rich-text-inspector.desc': '即时检查剪贴板上的 HTML 和纯文本。',
+                'tool.image-processor.name': '图片处理器',
+                'tool.image-processor.desc': '修改图片像素、尺寸、裁剪、压缩和处理证件照片。',
+                'tool.blockslice.name': '图片切割',
+                'tool.blockslice.desc': '将图片分割成更小的网格块。创建 Instagram 网格帖子、全景轮播或表情包格式。'
+            }
+        };
+
+        // Get current language from localStorage or default to 'en'
+        let currentLang = localStorage.getItem('language') || 'en';
+
+        // Update i18n elements
+        function updateLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('language', lang);
+            
+            // Update HTML lang attribute
+            document.documentElement.lang = lang;
+            
+            // Update language button text
+            document.getElementById('currentLang').textContent = lang.toUpperCase();
+            
+            // Update all elements with data-i18n attribute
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                }
+            });
+            
+            // Update placeholder
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+                const key = element.getAttribute('data-i18n-placeholder');
+                if (translations[lang] && translations[lang][key]) {
+                    element.placeholder = translations[lang][key];
+                }
+            });
+            
+            // Re-render categories and tools with new language
+            renderFilters();
+            const activeCat = categories.find(c => c.active).id;
+            const searchVal = document.getElementById('searchInput').value;
+            renderTools(activeCat, searchVal);
+        }
+
+        // Initialize language on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateLanguage(currentLang);
+        });
+
+        // Language switcher button
+        document.getElementById('langBtn').addEventListener('click', () => {
+            const newLang = currentLang === 'en' ? 'zh' : 'en';
+            updateLanguage(newLang);
+        });
+
+        // ==================== Data Configuration ====================
         const categories = [
             { id: 'all', label: 'All Tools', active: true },
             { id: 'development', label: 'Development', active: false },
@@ -97,11 +253,11 @@
         const tools = [
             {
                 id: 9,
-                name: "JSON Formatter",
+                nameKey: "tool.json-formatter.name",
+                descKey: "tool.json-formatter.desc",
                 vendor: "Tool Center",
                 category: "Development",
                 categoryStyle: "bg-blue-50 text-blue-700",
-                description: "Minify or beautify your JSON strings with proper indentation to make them easier to read and debug.",
                 meta: "v2.4.0",
                 icon: "fa-code",
                 iconColor: "text-blue-600",
@@ -110,11 +266,11 @@
             },
             {
                 id: 10,
-                name: "Unix Timestamp",
+                nameKey: "tool.timestamp-converter.name",
+                descKey: "tool.timestamp-converter.desc",
                 vendor: "Tool Center",
                 category: "Development",
                 categoryStyle: "bg-cyan-50 text-cyan-700",
-                description: "Convert Unix timestamps to human-readable dates and vice-versa.",
                 meta: "v1.0.0",
                 icon: "fa-clock",
                 iconColor: "text-cyan-600",
@@ -123,11 +279,11 @@
             },
             {
                 id: 11,
-                name: "Color Picker",
+                nameKey: "tool.color-picker.name",
+                descKey: "tool.color-picker.desc",
                 vendor: "Tool Center",
                 category: "Design",
                 categoryStyle: "bg-pink-50 text-pink-700",
-                description: "Convert HEX, RGB, HSL values and browse color palettes.",
                 meta: "v1.2.0",
                 icon: "fa-eye-dropper",
                 iconColor: "text-pink-600",
@@ -136,11 +292,11 @@
             },
             {
                 id: 12,
-                name: "Base64 Encoder",
+                nameKey: "tool.base64-encoder.name",
+                descKey: "tool.base64-encoder.desc",
                 vendor: "Tool Center",
                 category: "Development",
                 categoryStyle: "bg-orange-50 text-orange-700",
-                description: "Encode and decode data to Base64 format securely.",
                 meta: "v1.2.0",
                 icon: "fa-arrow-right-arrow-left",
                 iconColor: "text-orange-600",
@@ -149,11 +305,11 @@
             },
             {
                 id: 13,
-                name: "URL Parser",
+                nameKey: "tool.url-parser.name",
+                descKey: "tool.url-parser.desc",
                 vendor: "Tool Center",
                 category: "Development",
                 categoryStyle: "bg-teal-50 text-teal-700",
-                description: "Parse, analyze and edit URL parameters efficiently.",
                 meta: "v1.2.0",
                 icon: "fa-link",
                 iconColor: "text-teal-600",
@@ -162,11 +318,11 @@
             },
             {
                 id: 14,
-                name: "JSON Diff",
+                nameKey: "tool.json-diff.name",
+                descKey: "tool.json-diff.desc",
                 vendor: "Tool Center",
                 category: "Development",
                 categoryStyle: "bg-purple-50 text-purple-700",
-                description: "Compare two JSON files to identify differences.",
                 meta: "v2.1.0",
                 icon: "fa-file-contract",
                 iconColor: "text-purple-600",
@@ -175,11 +331,11 @@
             },
             {
                 id: 15,
-                name: "JWT Decoder",
+                nameKey: "tool.jwt-decoder.name",
+                descKey: "tool.jwt-decoder.desc",
                 vendor: "Tool Center",
                 category: "Development",
                 categoryStyle: "bg-red-50 text-red-700",
-                description: "Debug JWT tokens and view claims securely.",
                 meta: "v1.0.0",
                 icon: "fa-shield-halved",
                 iconColor: "text-red-600",
@@ -188,11 +344,11 @@
             },
             {
                 id: 16,
-                name: "Gradient Maker",
+                nameKey: "tool.gradient-maker.name",
+                descKey: "tool.gradient-maker.desc",
                 vendor: "Tool Center",
                 category: "Design",
                 categoryStyle: "bg-indigo-50 text-indigo-700",
-                description: "Create beautiful CSS gradients for your UI projects.",
                 meta: "v2.1.0",
                 icon: "fa-wand-magic-sparkles",
                 iconColor: "text-indigo-600",
@@ -201,11 +357,11 @@
             },
             {
                 id: 17,
-                name: "MD5 Generator",
+                nameKey: "tool.md5-generator.name",
+                descKey: "tool.md5-generator.desc",
                 vendor: "Tool Center",
                 category: "Development",
                 categoryStyle: "bg-gray-100 text-gray-700",
-                description: "Create MD5 hashes securely from any string input.",
                 meta: "v1.0.0",
                 icon: "fa-fingerprint",
                 iconColor: "text-gray-600",
@@ -214,11 +370,11 @@
             },
             {
                 id: 18,
-                name: "XML Formatter",
+                nameKey: "tool.xml-formatter.name",
+                descKey: "tool.xml-formatter.desc",
                 vendor: "Tool Center",
                 category: "Development",
                 categoryStyle: "bg-blue-50 text-blue-700",
-                description: "Beautify, format, and minify XML data.",
                 meta: "v2.1.0",
                 icon: "fa-file-lines",
                 iconColor: "text-blue-600",
@@ -227,11 +383,11 @@
             },
             {
                 id: 19,
-                name: "JSON to Markdown",
+                nameKey: "tool.json-to-markdown.name",
+                descKey: "tool.json-to-markdown.desc",
                 vendor: "Tool Center",
                 category: "Development",
                 categoryStyle: "bg-blue-50 text-blue-700",
-                description: "Convert transcript JSON structures into clean, readable Markdown format.",
                 meta: "v1.0.0",
                 icon: "fa-file-code",
                 iconColor: "text-blue-600",
@@ -240,11 +396,11 @@
             },
             {
                 id: 20,
-                name: "Extract URLs",
+                nameKey: "tool.url-extractor.name",
+                descKey: "tool.url-extractor.desc",
                 vendor: "Tool Center",
                 category: "Development",
                 categoryStyle: "bg-teal-50 text-teal-700",
-                description: "Pull a list of links (href attributes) from any pasted HTML content.",
                 meta: "v1.0.0",
                 icon: "fa-link",
                 iconColor: "text-teal-600",
@@ -253,11 +409,11 @@
             },
             {
                 id: 21,
-                name: "Clipboard Viewer",
+                nameKey: "tool.clipboard-viewer.name",
+                descKey: "tool.clipboard-viewer.desc",
                 vendor: "Tool Center",
                 category: "Development",
                 categoryStyle: "bg-indigo-50 text-indigo-700",
-                description: "Debug everything stored in your clipboard efficiently.",
                 meta: "v1.0.0",
                 icon: "fa-clipboard",
                 iconColor: "text-indigo-600",
@@ -266,11 +422,11 @@
             },
             {
                 id: 22,
-                name: "Paste HTML Subset",
+                nameKey: "tool.html-sanitizer.name",
+                descKey: "tool.html-sanitizer.desc",
                 vendor: "Tool Center",
                 category: "Development",
                 categoryStyle: "bg-red-50 text-red-700",
-                description: "See which tags survive HTML sanitization and ensure your content is safe.",
                 meta: "v1.0.0",
                 icon: "fa-filter",
                 iconColor: "text-red-600",
@@ -279,11 +435,11 @@
             },
             {
                 id: 23,
-                name: "Paste Rich Text",
+                nameKey: "tool.rich-text-inspector.name",
+                descKey: "tool.rich-text-inspector.desc",
                 vendor: "Tool Center",
                 category: "Development",
                 categoryStyle: "bg-green-50 text-green-700",
-                description: "Inspect HTML and plain text on your clipboard instantly.",
                 meta: "v1.0.0",
                 icon: "fa-paste",
                 iconColor: "text-green-600",
@@ -292,11 +448,11 @@
             },
             {
                 id: 24,
-                name: "Image Processor",
+                nameKey: "tool.image-processor.name",
+                descKey: "tool.image-processor.desc",
                 vendor: "Tool Center",
                 category: "Design",
                 categoryStyle: "bg-blue-50 text-blue-700",
-                description: "Modify image pixels, dimensions, crop, compress and process photos for ID documents.",
                 meta: "v1.0.0",
                 icon: "fa-wand-magic-sparkles",
                 iconColor: "text-blue-600",
@@ -305,11 +461,11 @@
             },
             {
                 id: 25,
-                name: "BlockSlice",
+                nameKey: "tool.blockslice.name",
+                descKey: "tool.blockslice.desc",
                 vendor: "Tool Center",
                 category: "Design",
                 categoryStyle: "bg-purple-50 text-purple-700",
-                description: "Split images into smaller grid blocks. Create grid posts for Instagram, panoramic carousels, or meme formats.",
                 meta: "v1.0.0",
                 icon: "fa-table-cells",
                 iconColor: "text-purple-600",
@@ -317,6 +473,11 @@
                 link: "https://traememe-cutrz6l.vercel.app/"
             }
         ];
+
+        // Helper function to get translated text
+        function t(key) {
+            return translations[currentLang][key] || key;
+        }
 
         // --- Render Functions ---
 
@@ -330,7 +491,7 @@
                         ? 'bg-slate-900 text-white border-slate-900 shadow-sm' 
                         : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300 hover:bg-gray-50'
                     }">
-                    ${cat.label}
+                    ${t('category.' + cat.id)}
                 </button>
             `).join('');
         }
@@ -342,18 +503,15 @@
             const filteredTools = tools.filter(tool => {
                 const matchesCategory = filterId === 'all' || 
                                         tool.category.toLowerCase().includes(filterId) ||
-                                        (filterId === 'development' && tool.category === 'Development') || // Exact match mapping if needed
-                                        (filterId === 'productivity' && tool.category === 'Productivity') || // Mapping "Project Management" to "Productivity" or keep separate? 
-                                        // The UI has "Project Management" tag but "Productivity" filter. 
-                                        // Usually Project Management falls under Productivity or Development. 
-                                        // Let's assume strict mapping for now, but allow broad search.
-                                        // Wait, the prompt shows "Project Management" tags on cards, but "Productivity" in filters.
-                                        // I'll make the filter logic simple: text match on category, or map specific IDs.
-                                        // Let's just match string inclusion for simplicity in this prototype.
+                                        (filterId === 'development' && tool.category === 'Development') ||
+                                        (filterId === 'productivity' && tool.category === 'Productivity') ||
                                         (filterId === 'productivity' && tool.category === 'Project Management'); 
 
-                const matchesSearch = tool.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                                      tool.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                const toolName = t(tool.nameKey);
+                const toolDesc = t(tool.descKey);
+                
+                const matchesSearch = toolName.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                      toolDesc.toLowerCase().includes(searchQuery.toLowerCase()) ||
                                       tool.vendor.toLowerCase().includes(searchQuery.toLowerCase());
 
                 return matchesCategory && matchesSearch;
@@ -363,38 +521,21 @@
                 container.innerHTML = `
                     <div class="col-span-full text-center py-12 text-gray-500">
                         <i class="fa-solid fa-inbox text-4xl mb-3 text-gray-300"></i>
-                        <p>No tools found matching your criteria.</p>
+                        <p>${t('noTools')}</p>
                     </div>
                 `;
                 return;
             }
 
             container.innerHTML = filteredTools.map(tool => {
-                // Icon handling
-                let iconHtml = '';
-                if (tool.name === 'Slack') {
-                     // Special handling for colorful logos if needed, but for now FA icons
-                     iconHtml = `<i class="fa-brands fa-slack text-2xl text-transparent bg-clip-text bg-gradient-to-br from-blue-500 via-green-500 to-red-500" style="-webkit-text-fill-color: transparent;"></i>`; 
-                     // Actually standard slack colors are hard with one icon class. Let's just use a colored icon.
-                     iconHtml = `<i class="fa-brands fa-slack text-2xl text-[#E01E5A]"></i>`;
-                } else if (tool.name === 'Figma') {
-                     iconHtml = `<i class="fa-brands fa-figma text-2xl text-white"></i>`;
-                } else if (tool.name === 'Notion') {
-                     iconHtml = `<span class="text-xl font-bold text-white">N</span>`;
-                } else {
-                     iconHtml = `<i class="${tool.name === 'Zoom' || tool.name === 'VS Code' || tool.name === 'JSON Formatter' || tool.name === 'Base64 Encoder' || tool.name === 'URL Parser' || tool.name === 'Color Picker' || tool.name === 'Unix Timestamp' || tool.name === 'JSON Diff' || tool.name === 'JWT Decoder' || tool.name === 'Gradient Maker' || tool.name === 'MD5 Generator' || tool.name === 'XML Formatter' || tool.name === 'JSON to Markdown' || tool.name === 'Extract URLs' || tool.name === 'Clipboard Viewer' || tool.name === 'Paste HTML Subset' || tool.name === 'Paste Rich Text' || tool.name === 'Image Processor' || tool.name === 'BlockSlice' ? 'fa-solid' : 'fa-brands'} ${tool.icon} text-2xl ${tool.iconColor}"></i>`;
-                }
-
-                // Trello specifics
-                if (tool.name === 'Trello') {
-                    iconHtml = `<i class="fa-brands fa-trello text-2xl text-[#0079BF]"></i>`;
-                }
+                const toolName = t(tool.nameKey);
+                const toolDesc = t(tool.descKey);
+                
+                // Icon handling - simplified for all tools
+                let iconHtml = `<i class="fa-solid ${tool.icon} text-2xl ${tool.iconColor}"></i>`;
 
                 // Logo Container Background adjustment
                 let logoContainerClass = `w-10 h-10 rounded-full flex items-center justify-center shadow-sm ${tool.logoBg}`;
-                if (tool.name === 'Slack' || tool.name === 'Trello') {
-                    logoContainerClass = `w-10 h-10 rounded-full flex items-center justify-center shadow-sm bg-white border border-gray-100`;
-                }
 
                 return `
                 <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-shadow duration-300 flex flex-col h-full group cursor-pointer" onclick="${tool.link ? `window.location.href='${tool.link}'` : ''}">
@@ -407,7 +548,7 @@
                         
                         <!-- Title & Vendor -->
                         <div>
-                            <h3 class="text-lg font-bold text-gray-900 leading-tight group-hover:text-blue-600 transition-colors">${tool.name}</h3>
+                            <h3 class="text-lg font-bold text-gray-900 leading-tight group-hover:text-blue-600 transition-colors">${toolName}</h3>
                         </div>
                     </div>
 
@@ -421,7 +562,7 @@
                     <!-- Description -->
                     <div class="flex-grow mb-4">
                         <p class="text-xs text-gray-500 leading-relaxed line-clamp-2">
-                            ${tool.description}
+                            ${toolDesc}
                         </p>
                     </div>
 

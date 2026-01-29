@@ -7,6 +7,7 @@ A comprehensive collection of developer utilities and tools designed to streamli
 - **Client-Side Processing**: All tools run entirely in the browser. Your data never leaves your device.
 - **Responsive Design**: Fully adapted for desktop, tablet, and mobile screens.
 - **Zero Dependencies**: Lightweight implementation using CDN-hosted Tailwind CSS and FontAwesome.
+- **Internationalization (i18n)**: Support for English and Simplified Chinese with easy language switching.
 - **Tool Request System**: Integrated feedback form to collect user requests for new tools.
 
 ## 🛠 Available Tools
@@ -32,6 +33,23 @@ A comprehensive collection of developer utilities and tools designed to streamli
 The project includes a lightweight admin interface for managing tool requests.
 
 - **[Admin Panel](admin.html)**: View user-submitted tool requests (stored locally in `localStorage` for demo purposes).
+
+## 🌍 Internationalization
+
+Tool Center supports multiple languages for a better user experience worldwide.
+
+### Supported Languages
+- 🇬🇧 **English** (en)
+- 🇨🇳 **简体中文** (zh)
+
+### Features
+- **One-Click Switch**: Toggle between languages using the language button in the top-right corner
+- **Auto-Save**: Language preference is saved in localStorage
+- **Complete Translation**: All UI elements, tool names, and descriptions are fully translated
+- **Real-time Update**: No page refresh needed when switching languages
+
+### For Developers
+To add new translations or modify existing ones, see [i18n-guide.md](i18n-guide.md) for detailed instructions.
 
 ## 💻 Tech Stack
 
