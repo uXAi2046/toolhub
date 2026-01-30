@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML 清理工具 - 工具中心</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F9FAFB;
+        }
+    </style>
+</head>
+<body class="text-slate-900 antialiased min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-100 sticky top-0 z-50">
+        <div class="max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-3 cursor-pointer">
+                <div class="grid grid-cols-2 gap-0.5 w-6 h-6">
+                    <div class="bg-blue-600 rounded-[1px]"></div>
+                    <div class="bg-blue-600 rounded-[1px]"></div>
+                    <div class="bg-blue-600 rounded-[1px]"></div>
+                    <div class="bg-blue-600 rounded-[1px] opacity-50"></div>
+                </div>
+                <span class="font-bold text-lg tracking-tight text-gray-900">工具中心</span>
+            </a>
+            <a href="html-sanitizer.html" class="text-sm text-gray-500 hover:text-blue-600 flex items-center gap-2">
+                <i class="fa-solid fa-language"></i> English
+            </a>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-[1400px] mx-auto px-6 py-8 w-full">
+        
+        <!-- Breadcrumbs -->
+        <div class="mb-6 flex items-center text-sm text-gray-500">
+            <a href="index.html" class="hover:text-blue-600 transition-colors flex items-center gap-2">
+                <i class="fa-solid fa-house"></i> 首页
+            </a>
+            <i class="fa-solid fa-chevron-right text-xs mx-3 text-gray-300"></i>
+            <span class="font-medium text-gray-900">HTML 清理工具</span>
+        </div>
+
+        <!-- Title & Description -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-3">HTML 清理工具</h1>
+            <p class="text-gray-500 leading-relaxed">
+                查看哪些标签在 HTML 清理后保留，确保您的内容安全。
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Main Content (Left Column) -->
+            <div class="lg:col-span-8 space-y-6">
+                
+                <!-- Options -->
+                <div class="flex items-center gap-6 px-1">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="stripScripts" checked class="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
+                        <span class="text-sm font-medium text-gray-700">移除脚本</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="removeStyles" checked class="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
+                        <span class="text-sm font-medium text-gray-700">移除样式</span>
+                    </label>
+                    <div class="flex-grow"></div>
+                    <button onclick="clearAll()" class="px-4 py-2 bg-white border border-gray-200 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-all">
+                        清空
+                    </button>
+                    <button onclick="sanitize()" class="px-4 py-2 bg-blue-600 text-white text-sm font-bold rounded-lg hover:bg-blue-700 transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-shield-halved"></i> 清理
+                    </button>
+                </div>
+
+                <!-- Main Container -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 h-[500px]">
+                    
+                    <!-- Raw Input -->
+                    <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col">
+                        <div class="px-4 py-3 border-b border-gray-100 bg-gray-50/50 flex justify-between items-center">
+                            <span class="font-bold text-xs text-gray-500 uppercase">原始输入</span>
+                            <span class="text-xs text-gray-400">在下方粘贴代码</span>
+                        </div>
+                        <textarea id="rawInput" class="w-full flex-1 p-4 text-sm font-mono text-gray-800 placeholder-gray-400 bg-white focus:outline-none resize-none" placeholder="<div onclick='alert(1)'>你好世界</div><script>恶意代码</script>"></textarea>
+                    </div>
+
+                    <!-- Sanitized Output -->
+                    <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col">
+                        <div class="px-4 py-3 border-b border-gray-100 bg-gray-50/50 flex justify-between items-center">
+                            <span class="font-bold text-xs text-gray-500 uppercase">清理后输出</span>
+                            <div class="flex gap-4 text-xs font-medium">
+                                <button onclick="switchView('source')" id="btn-source" class="text-blue-600 hover:text-blue-700">源代码</button>
+                                <button onclick="switchView('preview')" id="btn-preview" class="text-gray-400 hover:text-gray-600">预览</button>
+                            </div>
+                        </div>
+                        <div class="relative flex-1">
+                            <textarea id="sanitizedSource" readonly class="w-full h-full p-4 text-sm font-mono text-gray-600 bg-gray-50/10 focus:outline-none resize-none" placeholder="<div>你好世界</div>"></textarea>
+                            <div id="sanitizedPreview" class="hidden w-full h-full p-4 overflow-auto prose prose-sm max-w-none"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- About this tool -->
+                <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm mt-8">
+                    <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-info text-blue-500"></i> 关于此工具
+                    </h3>
+                    <p class="text-sm text-gray-500 mb-4 leading-relaxed">
+                        <strong>HTML 清理工具</strong>旨在模拟现代 Web 应用程序如何清理和净化用户提交的 HTML 内容。它帮助开发者和内容管理人员了解哪些 HTML 标签和属性被保留，哪些因安全原因被移除。
+                    </p>
+                    <p class="text-sm text-gray-500 mb-4 leading-relaxed">
+                        HTML 清理是一个关键的安全过程，通过移除潜在的恶意代码——如 <code>&lt;script&gt;</code> 标签、<code>onclick</code> 事件处理程序和不安全的 iframe 来源——来防止跨站脚本（XSS）攻击，同时保留安全的格式，如粗体文本、列表和链接。
+                    </p>
+                    <h4 class="font-bold text-gray-900 text-sm mb-2">常见允许的标签</h4>
+                    <ul class="list-disc list-inside text-sm text-gray-500 space-y-1 ml-2 font-mono">
+                        <li>格式：&lt;b&gt;, &lt;i&gt;, &lt;strong&gt;, &lt;em&gt;</li>
+                        <li>结构：&lt;p&gt;, &lt;div&gt;, &lt;span&gt;, &lt;br&gt;</li>
+                        <li>列表：&lt;ul&gt;, &lt;ol&gt;, &lt;li&gt;</li>
+                        <li>链接：&lt;a href="..."&gt;（通常具有限制的协议）</li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Sidebar (Right Column) -->
+            <div class="lg:col-span-4 space-y-6">
+                
+                <!-- Related Tools Card -->
+                <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+                    <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-screwdriver-wrench text-gray-400"></i> 相关工具
+                    </h3>
+                    <div class="space-y-4">
+                        <a href="json-formatter-zh.html" class="flex gap-3 group">
+                            <div class="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 group-hover:bg-blue-200 transition-colors">
+                                <i class="fa-solid fa-brackets-curly"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-gray-900 group-hover:text-blue-600 transition-colors">JSON 格式化器</h4>
+                                <p class="text-xs text-gray-500">验证和美化 JSON</p>
+                            </div>
+                        </a>
+                        <a href="xml-formatter-zh.html" class="flex gap-3 group">
+                            <div class="w-10 h-10 rounded-lg bg-green-100 text-green-600 flex items-center justify-center shrink-0 group-hover:bg-green-200 transition-colors">
+                                <i class="fa-solid fa-code"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-gray-900 group-hover:text-blue-600 transition-colors">HTML 编码器</h4>
+                                <p class="text-xs text-gray-500">转义特殊字符</p>
+                            </div>
+                        </a>
+                        <a href="url-parser-zh.html" class="flex gap-3 group">
+                            <div class="w-10 h-10 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center shrink-0 group-hover:bg-purple-200 transition-colors">
+                                <i class="fa-solid fa-link"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-gray-900 group-hover:text-blue-600 transition-colors">URL 解析器</h4>
+                                <p class="text-xs text-gray-500">将 URL 分解为各部分</p>
+                            </div>
+                        </a>
+                        <a href="base64-encoder-zh.html" class="flex gap-3 group">
+                            <div class="w-10 h-10 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center shrink-0 group-hover:bg-orange-200 transition-colors">
+                                <i class="fa-solid fa-file-shield"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-gray-900 group-hover:text-blue-600 transition-colors">Base64 转换器</h4>
+                                <p class="text-xs text-gray-500">编码和解码数据</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Tool Request Form -->
+                <div class="rounded-xl p-6 shadow-sm bg-gradient-to-br from-blue-600 to-indigo-700 text-white overflow-hidden relative">
+                    <div class="relative z-10">
+                        <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-lightbulb text-yellow-300"></i> 申请新工具
+                        </h3>
+                        <form id="toolRequestForm" class="space-y-3">
+                            <div>
+                                <label class="block text-xs font-medium text-blue-100 mb-1">工具名称 *</label>
+                                <input type="text" name="toolName" required class="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-sm text-white placeholder-blue-200 focus:outline-none focus:bg-white/20 focus:border-white/40 transition-colors" placeholder="例如：SQL 格式化器">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-blue-100 mb-1">描述 *</label>
+                                <textarea name="description" required rows="2" class="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-sm text-white placeholder-blue-200 focus:outline-none focus:bg-white/20 focus:border-white/40 transition-colors resize-none" placeholder="它应该做什么？"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-blue-100 mb-1">功能需求（可选）</label>
+                                <input type="text" name="features" class="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-sm text-white placeholder-blue-200 focus:outline-none focus:bg-white/20 focus:border-white/40 transition-colors" placeholder="具体要求...">
+                            </div>
+                            <button type="submit" class="w-full py-2 bg-white text-blue-600 font-bold rounded-lg shadow-sm hover:bg-blue-50 transition-colors text-sm mt-2">
+                                提交申请
+                            </button>
+                        </form>
+                        <div id="requestSuccess" class="hidden text-center py-8">
+                            <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">🎉</div>
+                            <h4 class="font-bold text-lg">谢谢！</h4>
+                            <p class="text-blue-100 text-sm mt-1">我们已收到您的申请。</p>
+                            <button onclick="resetRequestForm()" class="text-xs text-white underline mt-4 hover:text-blue-100">提交另一个</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        const rawInput = document.getElementById('rawInput');
+        const sanitizedSource = document.getElementById('sanitizedSource');
+        const sanitizedPreview = document.getElementById('sanitizedPreview');
+        const stripScripts = document.getElementById('stripScripts');
+        const removeStyles = document.getElementById('removeStyles');
+
+        function clearAll() {
+            rawInput.value = '';
+            sanitizedSource.value = '';
+            sanitizedPreview.innerHTML = '';
+        }
+
+        function sanitize() {
+            let html = rawInput.value;
+            if (!html) {
+                sanitizedSource.value = '';
+                sanitizedPreview.innerHTML = '';
+                return;
+            }
+
+            if (stripScripts.checked) {
+                html = html.replace(/<script\b[^>]*>([\s\S]*?)<\/script>/gim, "");
+                html = html.replace(/ on\w+="[^"]*"/g, "");
+                html = html.replace(/ on\w+='[^']*'/g, "");
+                html = html.replace(/ on\w+=\w+/g, "");
+                html = html.replace(/href="javascript:[^"]*"/g, 'href="#"');
+            }
+
+            if (removeStyles.checked) {
+                html = html.replace(/ style="[^"]*"/g, "");
+                html = html.replace(/ style='[^']*'/g, "");
+                html = html.replace(/<style\b[^>]*>([\s\S]*?)<\/style>/gim, "");
+            }
+
+            sanitizedSource.value = html;
+            sanitizedPreview.innerHTML = html;
+            showToast('清理完成', 'success');
+        }
+
+        function switchView(view) {
+            const btnSource = document.getElementById('btn-source');
+            const btnPreview = document.getElementById('btn-preview');
+
+            if (view === 'source') {
+                sanitizedSource.classList.remove('hidden');
+                sanitizedPreview.classList.add('hidden');
+                btnSource.classList.add('text-blue-600');
+                btnSource.classList.remove('text-gray-400');
+                btnPreview.classList.add('text-gray-400');
+                btnPreview.classList.remove('text-blue-600');
+            } else {
+                sanitizedSource.classList.add('hidden');
+                sanitizedPreview.classList.remove('hidden');
+                btnPreview.classList.add('text-blue-600');
+                btnPreview.classList.remove('text-gray-400');
+                btnSource.classList.add('text-gray-400');
+                btnSource.classList.remove('text-blue-600');
+            }
+        }
+
+        const requestForm = document.getElementById('toolRequestForm');
+        const successMsg = document.getElementById('requestSuccess');
+
+        if (requestForm) {
+            requestForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const lastSubmit = localStorage.getItem('lastToolRequestTime');
+                if (lastSubmit && Date.now() - parseInt(lastSubmit) < 60000) {
+                    showToast('请稍后再提交申请。', 'error');
+                    return;
+                }
+                const formData = new FormData(requestForm);
+                const request = {
+                    toolName: formData.get('toolName'),
+                    description: formData.get('description'),
+                    features: formData.get('features'),
+                    date: new Date().toISOString()
+                };
+                const requests = JSON.parse(localStorage.getItem('toolRequests') || '[]');
+                requests.push(request);
+                localStorage.setItem('toolRequests', JSON.stringify(requests));
+                localStorage.setItem('lastToolRequestTime', Date.now().toString());
+                requestForm.classList.add('hidden');
+                successMsg.classList.remove('hidden');
+                showToast('申请提交成功！');
+            });
+        }
+        function resetRequestForm() {
+            requestForm.reset();
+            requestForm.classList.remove('hidden');
+            successMsg.classList.add('hidden');
+        }
+
+        function showToast(message, type = 'success') {
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                container.className = 'fixed bottom-5 right-5 flex flex-col gap-3 z-50';
+                document.body.appendChild(container);
+            }
+            const toast = document.createElement('div');
+            const bgColor = type === 'success' ? 'bg-green-600' : 'bg-red-600';
+            toast.className = `${bgColor} text-white px-4 py-3 rounded-lg shadow-lg text-sm font-medium flex items-center gap-2 transform transition-all duration-300 translate-y-10 opacity-0`;
+            toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation'}"></i> ${message}`;
+            container.appendChild(toast);
+            requestAnimationFrame(() => toast.classList.remove('translate-y-10', 'opacity-0'));
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

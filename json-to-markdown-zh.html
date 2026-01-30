@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON 转 Markdown - 工具中心</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F9FAFB;
+        }
+    </style>
+</head>
+<body class="text-slate-900 antialiased min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-100 sticky top-0 z-50">
+        <div class="max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-3 cursor-pointer">
+                <div class="grid grid-cols-2 gap-0.5 w-6 h-6">
+                    <div class="bg-blue-600 rounded-[1px]"></div>
+                    <div class="bg-blue-600 rounded-[1px]"></div>
+                    <div class="bg-blue-600 rounded-[1px]"></div>
+                    <div class="bg-blue-600 rounded-[1px] opacity-50"></div>
+                </div>
+                <span class="font-bold text-lg tracking-tight text-gray-900">工具中心</span>
+            </a>
+            <a href="json-to-markdown.html" class="text-sm text-gray-500 hover:text-blue-600 flex items-center gap-2">
+                <i class="fa-solid fa-language"></i> English
+            </a>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-[1400px] mx-auto px-6 py-8 w-full">
+        
+        <!-- Breadcrumbs -->
+        <div class="mb-6 flex items-center text-sm text-gray-500">
+            <a href="index.html" class="hover:text-blue-600 transition-colors flex items-center gap-2">
+                <i class="fa-solid fa-house"></i> 首页
+            </a>
+            <i class="fa-solid fa-chevron-right text-xs mx-3 text-gray-300"></i>
+            <span class="font-medium text-gray-900">JSON 转 Markdown</span>
+        </div>
+
+        <!-- Title & Description -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-3">JSON 转 Markdown</h1>
+            <p class="text-gray-500 leading-relaxed">
+                将转录稿 JSON 结构转换为清晰易读的 Markdown 格式。
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Main Content (Left Column) -->
+            <div class="lg:col-span-8 space-y-6">
+
+                <!-- Converter Container -->
+                <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col md:flex-row h-[600px]">
+                    
+                    <!-- Input Section -->
+                    <div class="flex-1 flex flex-col border-b md:border-b-0 md:border-r border-gray-200">
+                        <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100 bg-gray-50/50">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-code text-blue-600"></i>
+                                <span class="font-medium text-gray-700">JSON 输入</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <button onclick="loadSample()" class="text-xs font-medium text-blue-600 hover:text-blue-700 flex items-center gap-1.5 transition-colors">
+                                    加载示例
+                                </button>
+                                <button onclick="clearInput()" class="text-xs font-medium text-gray-500 hover:text-red-600 flex items-center gap-1.5 transition-colors">
+                                    清空
+                                </button>
+                            </div>
+                        </div>
+                        <textarea id="jsonInput" class="w-full flex-1 p-4 text-sm font-mono text-gray-800 placeholder-gray-400 bg-white focus:outline-none resize-none" placeholder='在此粘贴您的 JSON... 例如：[{"text": "Hello world"}]'></textarea>
+                    </div>
+
+                    <!-- Output Section -->
+                    <div class="flex-1 flex flex-col">
+                        <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100 bg-gray-50/50">
+                            <span class="font-medium text-gray-700">Markdown 输出</span>
+                            <button onclick="copyResult()" id="copyBtn" class="text-xs font-medium text-gray-500 hover:text-blue-600 bg-white border border-gray-200 px-2.5 py-1 rounded transition-colors flex items-center gap-1.5 shadow-sm">
+                                <i class="fa-regular fa-copy"></i> 复制
+                            </button>
+                        </div>
+                        <textarea id="markdownOutput" readonly class="w-full flex-1 p-4 text-sm font-mono text-gray-600 bg-gray-50/10 focus:outline-none resize-none" placeholder="Markdown 结果将显示在此处..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Convert Button -->
+                <div class="flex justify-center">
+                    <button onclick="convertToMarkdown()" class="px-6 py-3 bg-blue-600 text-white font-bold rounded-full shadow-lg hover:bg-blue-700 transition-all transform hover:-translate-y-0.5 flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-right-arrow-left"></i> 转换为 Markdown
+                    </button>
+                </div>
+
+                <!-- About this tool -->
+                <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm mt-8">
+                    <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-info text-blue-500"></i> 关于此工具
+                    </h3>
+                    <p class="text-sm text-gray-500 mb-4 leading-relaxed">
+                        <strong>JSON 转 Markdown</strong> 转换器专为处理结构化转录数据的开发者和内容创作者设计。通常，语音转文字服务或内容管理系统的数据导出采用难以阅读的原始 JSON 格式。
+                    </p>
+                    <p class="text-sm text-gray-500 mb-4 leading-relaxed">
+                        此工具解析您的 JSON 数组或对象，智能识别文本字段、时间戳和说话人标签，并将它们格式化为清晰易读的 Markdown 文档。它支持嵌套结构和常见的转录模式。
+                    </p>
+                    <h4 class="font-bold text-gray-900 text-sm mb-2">使用方法</h4>
+                    <ul class="list-disc list-inside text-sm text-gray-500 space-y-1 ml-2">
+                        <li>将您的 JSON 数据粘贴到左侧输入面板。</li>
+                        <li>点击"转换为 Markdown"按钮。</li>
+                        <li>格式化的 Markdown 将出现在右侧面板。</li>
+                        <li>点击"复制"将结果保存到剪贴板。</li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Sidebar (Right Column) -->
+            <div class="lg:col-span-4 space-y-6">
+                
+                <!-- Related Tools Card -->
+                <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+                    <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-screwdriver-wrench text-gray-400"></i> 相关工具
+                    </h3>
+                    <div class="space-y-4">
+                        <a href="json-formatter-zh.html" class="flex gap-3 group">
+                            <div class="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 group-hover:bg-blue-200 transition-colors">
+                                <i class="fa-solid fa-code"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-gray-900 group-hover:text-blue-600 transition-colors">JSON 格式化器</h4>
+                                <p class="text-xs text-gray-500">美化和验证您的 JSON 代码。</p>
+                            </div>
+                        </a>
+                        <a href="json-diff-zh.html" class="flex gap-3 group">
+                            <div class="w-10 h-10 rounded-lg bg-green-100 text-green-600 flex items-center justify-center shrink-0 group-hover:bg-green-200 transition-colors">
+                                <i class="fa-solid fa-file-csv"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-gray-900 group-hover:text-blue-600 transition-colors">JSON 差异</h4>
+                                <p class="text-xs text-gray-500">比较两个 JSON 文件。</p>
+                            </div>
+                        </a>
+                        <a href="#" class="flex gap-3 group opacity-60 cursor-not-allowed" title="即将推出">
+                            <div class="w-10 h-10 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-right-left"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-gray-900">文本差异检查器</h4>
+                                <p class="text-xs text-gray-500">比较两个文本文件。</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Tool Request Form -->
+                <div class="rounded-xl p-6 shadow-sm bg-gradient-to-br from-blue-600 to-indigo-700 text-white overflow-hidden relative">
+                    <div class="relative z-10">
+                        <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-lightbulb text-yellow-300"></i> 申请新工具
+                        </h3>
+                        <form id="toolRequestForm" class="space-y-3">
+                            <div>
+                                <label class="block text-xs font-medium text-blue-100 mb-1">工具名称 *</label>
+                                <input type="text" name="toolName" required class="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-sm text-white placeholder-blue-200 focus:outline-none focus:bg-white/20 focus:border-white/40 transition-colors" placeholder="例如：SQL 格式化器">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-blue-100 mb-1">描述 *</label>
+                                <textarea name="description" required rows="2" class="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-sm text-white placeholder-blue-200 focus:outline-none focus:bg-white/20 focus:border-white/40 transition-colors resize-none" placeholder="它应该做什么？"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-blue-100 mb-1">功能需求（可选）</label>
+                                <input type="text" name="features" class="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-sm text-white placeholder-blue-200 focus:outline-none focus:bg-white/20 focus:border-white/40 transition-colors" placeholder="具体要求...">
+                            </div>
+                            <button type="submit" class="w-full py-2 bg-white text-blue-600 font-bold rounded-lg shadow-sm hover:bg-blue-50 transition-colors text-sm mt-2">
+                                提交申请
+                            </button>
+                        </form>
+                        <div id="requestSuccess" class="hidden text-center py-8">
+                            <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">🎉</div>
+                            <h4 class="font-bold text-lg">谢谢！</h4>
+                            <p class="text-blue-100 text-sm mt-1">我们已收到您的申请。</p>
+                            <button onclick="resetRequestForm()" class="text-xs text-white underline mt-4 hover:text-blue-100">提交另一个</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        const jsonInput = document.getElementById('jsonInput');
+        const markdownOutput = document.getElementById('markdownOutput');
+
+        function loadSample() {
+            jsonInput.value = JSON.stringify([
+                { "speaker": "A", "text": "你好，你好吗？", "timestamp": "00:00:05" },
+                { "speaker": "B", "text": "我很好，谢谢！你呢？", "timestamp": "00:00:10" },
+                { "speaker": "A", "text": "很好。让我们讨论这个项目。", "timestamp": "00:00:15" }
+            ], null, 2);
+        }
+
+        function clearInput() {
+            jsonInput.value = '';
+            markdownOutput.value = '';
+        }
+
+        function convertToMarkdown() {
+            const input = jsonInput.value.trim();
+            if (!input) {
+                markdownOutput.value = '';
+                return;
+            }
+
+            try {
+                let data = JSON.parse(input);
+                let md = '';
+
+                if (Array.isArray(data)) {
+                    data.forEach(item => {
+                        md += processItem(item) + '\n\n';
+                    });
+                } else if (typeof data === 'object') {
+                    const keys = Object.keys(data);
+                    let foundArray = false;
+                    for (let key of keys) {
+                        if (Array.isArray(data[key])) {
+                            data[key].forEach(item => {
+                                md += processItem(item) + '\n\n';
+                            });
+                            foundArray = true;
+                            break;
+                        }
+                    }
+                    if (!foundArray) {
+                        md = processItem(data);
+                    }
+                } else {
+                    md = String(data);
+                }
+
+                markdownOutput.value = md.trim();
+                showToast('已转换为 Markdown！', 'success');
+            } catch (e) {
+                markdownOutput.value = "错误：无效的 JSON\n" + e.message;
+                showToast('无效的 JSON', 'error');
+            }
+        }
+
+        function processItem(item) {
+            if (typeof item === 'string') return item;
+            if (typeof item !== 'object' || item === null) return String(item);
+
+            let line = '';
+            if (item.timestamp) line += `**[${item.timestamp}]** `;
+            if (item.speaker) line += `**${item.speaker}:** `;
+            if (item.text) line += item.text;
+            else if (item.content) line += item.content;
+            else if (item.message) line += item.message;
+            else {
+                return Object.entries(item).map(([k, v]) => `**${k}:** ${v}`).join('\n');
+            }
+            return line;
+        }
+
+        function copyResult() {
+            if (!markdownOutput.value) return;
+            navigator.clipboard.writeText(markdownOutput.value).then(() => {
+                const originalText = document.getElementById('copyBtn').innerHTML;
+                document.getElementById('copyBtn').innerHTML = '<i class="fa-solid fa-check"></i> 已复制！';
+                setTimeout(() => {
+                    document.getElementById('copyBtn').innerHTML = originalText;
+                }, 2000);
+            });
+        }
+
+        const requestForm = document.getElementById('toolRequestForm');
+        const successMsg = document.getElementById('requestSuccess');
+
+        if (requestForm) {
+            requestForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const lastSubmit = localStorage.getItem('lastToolRequestTime');
+                if (lastSubmit && Date.now() - parseInt(lastSubmit) < 60000) {
+                    showToast('请稍后再提交申请。', 'error');
+                    return;
+                }
+                const formData = new FormData(requestForm);
+                const request = {
+                    toolName: formData.get('toolName'),
+                    description: formData.get('description'),
+                    features: formData.get('features'),
+                    date: new Date().toISOString()
+                };
+                const requests = JSON.parse(localStorage.getItem('toolRequests') || '[]');
+                requests.push(request);
+                localStorage.setItem('toolRequests', JSON.stringify(requests));
+                localStorage.setItem('lastToolRequestTime', Date.now().toString());
+                requestForm.classList.add('hidden');
+                successMsg.classList.remove('hidden');
+                showToast('申请提交成功！');
+            });
+        }
+        function resetRequestForm() {
+            requestForm.reset();
+            requestForm.classList.remove('hidden');
+            successMsg.classList.add('hidden');
+        }
+
+        function showToast(message, type = 'success') {
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                container.className = 'fixed bottom-5 right-5 flex flex-col gap-3 z-50';
+                document.body.appendChild(container);
+            }
+            const toast = document.createElement('div');
+            const bgColor = type === 'success' ? 'bg-green-600' : 'bg-red-600';
+            toast.className = `${bgColor} text-white px-4 py-3 rounded-lg shadow-lg text-sm font-medium flex items-center gap-2 transform transition-all duration-300 translate-y-10 opacity-0`;
+            toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation'}"></i> ${message}`;
+            container.appendChild(toast);
+            requestAnimationFrame(() => toast.classList.remove('translate-y-10', 'opacity-0'));
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

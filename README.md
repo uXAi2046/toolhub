@@ -23,6 +23,9 @@ A comprehensive collection of developer utilities and tools designed to streamli
 - **[JWT Decoder](jwt-decoder.html)**: Decode, inspect, and verify JSON Web Tokens (JWT) signatures.
 - **[MD5 Generator](md5-generator.html)**: Generate MD5 hashes from text input.
 
+### Image & Media
+- **[Image Processor](image-processor.html)**: Resize, crop, compress, and process images directly in the browser.
+
 ### Development & Design
 - **[JSON Diff](json-diff.html)**: Compare two JSON objects and highlight differences.
 - **[Color Picker](color-picker.html)**: Convert between Hex, RGB, and HSL color formats.

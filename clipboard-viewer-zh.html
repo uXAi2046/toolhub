@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>剪贴板查看器 - 工具中心</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F9FAFB;
+        }
+    </style>
+</head>
+<body class="text-slate-900 antialiased min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-100 sticky top-0 z-50">
+        <div class="max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-3 cursor-pointer">
+                <div class="grid grid-cols-2 gap-0.5 w-6 h-6">
+                    <div class="bg-blue-600 rounded-[1px]"></div>
+                    <div class="bg-blue-600 rounded-[1px]"></div>
+                    <div class="bg-blue-600 rounded-[1px]"></div>
+                    <div class="bg-blue-600 rounded-[1px] opacity-50"></div>
+                </div>
+                <span class="font-bold text-lg tracking-tight text-gray-900">工具中心</span>
+            </a>
+            <a href="clipboard-viewer.html" class="text-sm text-gray-500 hover:text-blue-600 flex items-center gap-2">
+                <i class="fa-solid fa-language"></i> English
+            </a>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-[1400px] mx-auto px-6 py-8 w-full">
+        
+        <!-- Breadcrumbs -->
+        <div class="mb-6 flex items-center text-sm text-gray-500">
+            <a href="index.html" class="hover:text-blue-600 transition-colors flex items-center gap-2">
+                <i class="fa-solid fa-house"></i> 首页
+            </a>
+            <i class="fa-solid fa-chevron-right text-xs mx-3 text-gray-300"></i>
+            <span class="font-medium text-gray-900">剪贴板查看器</span>
+        </div>
+
+        <!-- Title & Description -->
+        <div class="flex items-center gap-4 mb-8">
+            <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center text-xl shrink-0">
+                <i class="fa-regular fa-clipboard"></i>
+            </div>
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">剪贴板查看器</h1>
+                <p class="text-gray-500 mt-1">
+                    高效调试存储在剪贴板中的所有内容。
+                </p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Main Content (Left Column) -->
+            <div class="lg:col-span-8 space-y-6">
+                
+                <!-- Viewer Container -->
+                <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden min-h-[500px] flex flex-col">
+                    
+                    <!-- Toolbar -->
+                    <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+                        <div class="font-bold text-gray-900">剪贴板内容</div>
+                        <button onclick="readClipboard()" class="px-4 py-2 bg-blue-600 text-white text-sm font-bold rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2">
+                            <i class="fa-solid fa-rotate"></i> 重新加载剪贴板
+                        </button>
+                    </div>
+
+                    <!-- Tabs -->
+                    <div class="flex border-b border-gray-100 px-6 gap-6 text-sm font-medium">
+                        <button onclick="switchTab('text')" id="tab-text" class="py-3 text-blue-600 border-b-2 border-blue-600 flex items-center gap-2">
+                            <i class="fa-regular fa-file-lines"></i> 纯文本
+                        </button>
+                        <button onclick="switchTab('html')" id="tab-html" class="py-3 text-gray-500 hover:text-gray-700 flex items-center gap-2">
+                            <i class="fa-solid fa-code"></i> HTML
+                        </button>
+                        <button onclick="switchTab('image')" id="tab-image" class="py-3 text-gray-500 hover:text-gray-700 flex items-center gap-2">
+                            <i class="fa-regular fa-image"></i> 图片
+                        </button>
+                        <button onclick="switchTab('metadata')" id="tab-metadata" class="py-3 text-gray-500 hover:text-gray-700 flex items-center gap-2">
+                            <i class="fa-solid fa-info"></i> 元数据
+                        </button>
+                    </div>
+
+                    <!-- Content Area -->
+                    <div class="p-6 flex-grow bg-gray-50/30 relative">
+                        <!-- Empty State -->
+                        <div id="empty-state" class="absolute inset-0 flex flex-col items-center justify-center text-gray-400 p-8 text-center">
+                            <i class="fa-regular fa-clipboard text-4xl mb-4 opacity-20"></i>
+                            <p class="italic font-mono text-sm">按"重新加载剪贴板"或在页面任意位置粘贴内容以查看详细信息。</p>
+                        </div>
+
+                        <!-- Text View -->
+                        <div id="view-text" class="hidden h-full">
+                            <textarea id="text-content" readonly class="w-full h-full p-4 bg-white border border-gray-200 rounded-lg font-mono text-sm text-gray-700 focus:outline-none resize-none"></textarea>
+                        </div>
+
+                        <!-- HTML View -->
+                        <div id="view-html" class="hidden h-full">
+                            <pre id="html-content" class="w-full h-full p-4 bg-white border border-gray-200 rounded-lg font-mono text-xs text-gray-700 overflow-auto whitespace-pre-wrap"></pre>
+                        </div>
+
+                        <!-- Image View -->
+                        <div id="view-image" class="hidden h-full flex items-center justify-center bg-gray-100 rounded-lg border border-gray-200 border-dashed">
+                            <img id="image-content" class="max-w-full max-h-[400px] object-contain shadow-lg" />
+                            <p id="no-image-msg" class="text-gray-400 hidden">剪贴板中未找到图片数据。</p>
+                        </div>
+
+                        <!-- Metadata View -->
+                        <div id="view-metadata" class="hidden h-full">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="bg-white p-4 rounded-lg border border-gray-200">
+                                    <div class="text-xs font-bold text-gray-400 uppercase mb-1">类型</div>
+                                    <div id="meta-type" class="font-mono text-gray-900">text/plain</div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-gray-200">
+                                    <div class="text-xs font-bold text-gray-400 uppercase mb-1">大小</div>
+                                    <div id="meta-size" class="font-mono text-gray-900">0 字节</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- About this tool -->
+                <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+                    <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-info text-blue-500"></i> 关于此工具
+                    </h3>
+                    <p class="text-sm text-gray-500 mb-4 leading-relaxed">
+                        剪贴板查看器是一个开发者实用工具，用于检查系统剪贴板的原始内容。它允许您可视化当前存储在复制缓冲区中的各种 MIME 类型的数据。
+                    </p>
+                    <p class="text-sm text-gray-500 leading-relaxed">
+                        这在调试 Web 应用程序中的复制粘贴功能、检查富文本格式问题或验证图片是否正确复制到内存时特别有用。
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- Sidebar (Right Column) -->
+            <div class="lg:col-span-4 space-y-6">
+                
+                <!-- Related Tools Card -->
+                <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+                    <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-screwdriver-wrench text-gray-400"></i> 相关工具
+                    </h3>
+                    <div class="space-y-4">
+                        <a href="json-formatter-zh.html" class="flex gap-3 group">
+                            <div class="w-10 h-10 rounded-lg bg-green-100 text-green-600 flex items-center justify-center shrink-0 group-hover:bg-green-200 transition-colors">
+                                <i class="fa-solid fa-brackets-curly"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-gray-900 group-hover:text-blue-600 transition-colors">JSON 格式化器</h4>
+                                <p class="text-xs text-gray-500">验证和美化 JSON</p>
+                            </div>
+                        </a>
+                        <a href="base64-encoder-zh.html" class="flex gap-3 group">
+                            <div class="w-10 h-10 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center shrink-0 group-hover:bg-purple-200 transition-colors">
+                                <i class="fa-solid fa-file-shield"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-gray-900 group-hover:text-blue-600 transition-colors">Base64 编码器</h4>
+                                <p class="text-xs text-gray-500">编码和解码数据</p>
+                            </div>
+                        </a>
+                        <a href="color-picker-zh.html" class="flex gap-3 group">
+                            <div class="w-10 h-10 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center shrink-0 group-hover:bg-orange-200 transition-colors">
+                                <i class="fa-solid fa-palette"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-bold text-gray-900 group-hover:text-blue-600 transition-colors">颜色选择器</h4>
+                                <p class="text-xs text-gray-500">识别和转换颜色</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Pro Tip Card -->
+                <div class="bg-blue-600 rounded-xl p-6 shadow-lg text-white text-center">
+                    <div class="mb-3 text-3xl">
+                        <i class="fa-solid fa-lightbulb text-yellow-300"></i>
+                    </div>
+                    <h3 class="font-bold text-lg mb-2">专业提示</h3>
+                    <p class="text-blue-100 text-sm leading-relaxed">
+                        您可以将图片直接拖放到剪贴板查看器中来检查它们的属性，而无需先复制它们。
+                    </p>
+                </div>
+
+                <!-- Tool Request Form -->
+                <div class="rounded-xl p-6 shadow-sm bg-gradient-to-br from-blue-600 to-indigo-700 text-white overflow-hidden relative">
+                    <div class="relative z-10">
+                        <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-lightbulb text-yellow-300"></i> 申请新工具
+                        </h3>
+                        <form id="toolRequestForm" class="space-y-3">
+                            <div>
+                                <label class="block text-xs font-medium text-blue-100 mb-1">工具名称 *</label>
+                                <input type="text" name="toolName" required class="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-sm text-white placeholder-blue-200 focus:outline-none focus:bg-white/20 focus:border-white/40 transition-colors" placeholder="例如：SQL 格式化器">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-blue-100 mb-1">描述 *</label>
+                                <textarea name="description" required rows="2" class="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-sm text-white placeholder-blue-200 focus:outline-none focus:bg-white/20 focus:border-white/40 transition-colors resize-none" placeholder="它应该做什么？"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-blue-100 mb-1">功能需求（可选）</label>
+                                <input type="text" name="features" class="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-sm text-white placeholder-blue-200 focus:outline-none focus:bg-white/20 focus:border-white/40 transition-colors" placeholder="具体要求...">
+                            </div>
+                            <button type="submit" class="w-full py-2 bg-white text-blue-600 font-bold rounded-lg shadow-sm hover:bg-blue-50 transition-colors text-sm mt-2">
+                                提交申请
+                            </button>
+                        </form>
+                        <div id="requestSuccess" class="hidden text-center py-8">
+                            <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">🎉</div>
+                            <h4 class="font-bold text-lg">谢谢！</h4>
+                            <p class="text-blue-100 text-sm mt-1">我们已收到您的申请。</p>
+                            <button onclick="resetRequestForm()" class="text-xs text-white underline mt-4 hover:text-blue-100">提交另一个</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        const views = {
+            text: document.getElementById('view-text'),
+            html: document.getElementById('view-html'),
+            image: document.getElementById('view-image'),
+            metadata: document.getElementById('view-metadata')
+        };
+        const tabs = {
+            text: document.getElementById('tab-text'),
+            html: document.getElementById('tab-html'),
+            image: document.getElementById('tab-image'),
+            metadata: document.getElementById('tab-metadata')
+        };
+        const emptyState = document.getElementById('empty-state');
+
+        function switchTab(tabName) {
+            Object.values(views).forEach(el => el.classList.add('hidden'));
+            Object.values(tabs).forEach(el => {
+                el.classList.remove('text-blue-600', 'border-b-2', 'border-blue-600');
+                el.classList.add('text-gray-500');
+            });
+
+            if (emptyState.classList.contains('hidden')) {
+                views[tabName].classList.remove('hidden');
+            }
+            
+            tabs[tabName].classList.remove('text-gray-500');
+            tabs[tabName].classList.add('text-blue-600', 'border-b-2', 'border-blue-600');
+        }
+
+        async function readClipboard() {
+            try {
+                const text = await navigator.clipboard.readText();
+                const items = await navigator.clipboard.read();
+                
+                emptyState.classList.add('hidden');
+                
+                let hasImage = false;
+                let htmlContent = '';
+                let plainText = text;
+
+                for (const item of items) {
+                    if (item.types.some(type => type.startsWith('image/'))) {
+                        const blob = await item.getType(item.types.find(type => type.startsWith('image/')));
+                        const url = URL.createObjectURL(blob);
+                        document.getElementById('image-content').src = url;
+                        document.getElementById('image-content').classList.remove('hidden');
+                        document.getElementById('no-image-msg').classList.add('hidden');
+                        hasImage = true;
+                        
+                        document.getElementById('meta-type').textContent = blob.type;
+                        document.getElementById('meta-size').textContent = `${blob.size} 字节`;
+                    }
+                    
+                    if (item.types.includes('text/html')) {
+                        const blob = await item.getType('text/html');
+                        htmlContent = await blob.text();
+                    }
+                }
+
+                if (!hasImage) {
+                    document.getElementById('image-content').classList.add('hidden');
+                    document.getElementById('no-image-msg').classList.remove('hidden');
+                    
+                    document.getElementById('meta-type').textContent = htmlContent ? 'text/html' : 'text/plain';
+                    document.getElementById('meta-size').textContent = `${new Blob([text]).size} 字节`;
+                }
+
+                document.getElementById('text-content').value = plainText;
+                document.getElementById('html-content').textContent = htmlContent || "无 HTML 内容可用";
+                
+                if (hasImage) switchTab('image');
+                else if (htmlContent) switchTab('html');
+                else switchTab('text');
+
+                showToast('剪贴板已加载！', 'success');
+
+            } catch (err) {
+                console.error(err);
+                showToast('无法读取剪贴板。请允许权限。', 'error');
+            }
+        }
+
+        document.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const clipboardData = e.clipboardData || window.clipboardData;
+            const text = clipboardData.getData('text');
+            const html = clipboardData.getData('text/html');
+            const files = clipboardData.files;
+
+            emptyState.classList.add('hidden');
+
+            document.getElementById('text-content').value = text;
+            document.getElementById('html-content').textContent = html || "无 HTML 内容可用";
+
+            if (files && files.length > 0 && files[0].type.startsWith('image/')) {
+                const url = URL.createObjectURL(files[0]);
+                document.getElementById('image-content').src = url;
+                document.getElementById('image-content').classList.remove('hidden');
+                document.getElementById('no-image-msg').classList.add('hidden');
+                
+                document.getElementById('meta-type').textContent = files[0].type;
+                document.getElementById('meta-size').textContent = `${files[0].size} 字节`;
+                switchTab('image');
+            } else {
+                document.getElementById('image-content').classList.add('hidden');
+                document.getElementById('no-image-msg').classList.remove('hidden');
+                
+                document.getElementById('meta-type').textContent = html ? 'text/html' : 'text/plain';
+                document.getElementById('meta-size').textContent = `${new Blob([text]).size} 字节`;
+                
+                if(html) switchTab('html');
+                else switchTab('text');
+            }
+            
+            showToast('内容已粘贴！', 'success');
+        });
+
+        const requestForm = document.getElementById('toolRequestForm');
+        const successMsg = document.getElementById('requestSuccess');
+
+        if (requestForm) {
+            requestForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const lastSubmit = localStorage.getItem('lastToolRequestTime');
+                if (lastSubmit && Date.now() - parseInt(lastSubmit) < 60000) {
+                    showToast('请稍后再提交申请。', 'error');
+                    return;
+                }
+                const formData = new FormData(requestForm);
+                const request = {
+                    toolName: formData.get('toolName'),
+                    description: formData.get('description'),
+                    features: formData.get('features'),
+                    date: new Date().toISOString()
+                };
+                const requests = JSON.parse(localStorage.getItem('toolRequests') || '[]');
+                requests.push(request);
+                localStorage.setItem('toolRequests', JSON.stringify(requests));
+                localStorage.setItem('lastToolRequestTime', Date.now().toString());
+                requestForm.classList.add('hidden');
+                successMsg.classList.remove('hidden');
+                showToast('申请提交成功！');
+            });
+        }
+        function resetRequestForm() {
+            requestForm.reset();
+            requestForm.classList.remove('hidden');
+            successMsg.classList.add('hidden');
+        }
+
+        function showToast(message, type = 'success') {
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                container.className = 'fixed bottom-5 right-5 flex flex-col gap-3 z-50';
+                document.body.appendChild(container);
+            }
+            const toast = document.createElement('div');
+            const bgColor = type === 'success' ? 'bg-green-600' : 'bg-red-600';
+            toast.className = `${bgColor} text-white px-4 py-3 rounded-lg shadow-lg text-sm font-medium flex items-center gap-2 transform transition-all duration-300 translate-y-10 opacity-0`;
+            toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation'}"></i> ${message}`;
+            container.appendChild(toast);
+            requestAnimationFrame(() => toast.classList.remove('translate-y-10', 'opacity-0'));
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

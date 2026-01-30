@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unix 时间戳转换器 - 工具中心</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F9FAFB;
+        }
+    </style>
+</head>
+<body class="text-slate-900 antialiased min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-100 sticky top-0 z-50">
+        <div class="max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">
+            <!-- Logo -->
+            <a href="index.html" class="flex items-center gap-3 cursor-pointer">
+                <div class="grid grid-cols-2 gap-0.5 w-6 h-6">
+                    <div class="bg-blue-600 rounded-[1px]"></div>
+                    <div class="bg-blue-600 rounded-[1px]"></div>
+                    <div class="bg-blue-600 rounded-[1px]"></div>
+                    <div class="bg-blue-600 rounded-[1px] opacity-50"></div>
+                </div>
+                <span class="font-bold text-lg tracking-tight text-gray-900">工具中心</span>
+            </a>
+            
+            <!-- Language Switcher -->
+            <div class="flex items-center gap-2">
+                <button onclick="window.location.href='timestamp-converter.html'" class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors">
+                    <i class="fa-solid fa-language"></i>
+                    <span>EN</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-[1400px] mx-auto px-6 py-12 w-full">
+        
+        <!-- Breadcrumbs -->
+        <div class="mb-6 flex items-center text-sm text-gray-500">
+            <a href="index.html" class="hover:text-blue-600 transition-colors flex items-center gap-2">
+                <i class="fa-solid fa-house"></i> 首页
+            </a>
+            <i class="fa-solid fa-chevron-right text-xs mx-3 text-gray-300"></i>
+            <span class="font-medium text-gray-900">Unix 时间戳转换器</span>
+        </div>
+
+        <!-- Hero Header -->
+        <div class="mb-8">
+            <h1 class="text-4xl font-extrabold text-gray-900 mb-2 tracking-tight">Unix 时间戳转换器</h1>
+            <p class="text-gray-500">将 Unix 时间戳转换为可读日期，反之亦然。</p>
+        </div>
+
+        <!-- Main Converter Card -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-12">
+            
+            <!-- Epoch Hero -->
+            <div class="p-8 text-center border-b border-gray-100 bg-gray-50/30 relative">
+                <div class="absolute top-6 right-6">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700 tracking-wide">
+                        <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                        实时
+                    </span>
+                </div>
+                <div class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">当前 UNIX 时间戳</div>
+                <div id="currentEpoch" class="text-6xl md:text-7xl font-bold text-blue-600 tracking-tighter mb-2 font-mono">
+                    加载中...
+                </div>
+                <div class="text-xs text-gray-400 uppercase tracking-wide font-mono">自 1970年1月1日 (UTC) 起的秒数</div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-100">
+                
+                <!-- Left Column: Timestamp to Date -->
+                <div class="p-8">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-lg">
+                            <i class="fa-regular fa-clock"></i>
+                        </div>
+                        <div>
+                            <h2 class="font-bold text-gray-900">时间戳转日期</h2>
+                            <p class="text-xs text-gray-500">将整数转换为日期字符串</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 mb-1.5">输入时间戳</label>
+                            <div class="relative">
+                                <input type="number" id="tsInput" class="block w-full rounded-lg border-gray-200 bg-gray-50 focus:bg-white focus:border-blue-500 focus:ring-blue-500 text-gray-900 py-2.5 px-3 pr-10 font-mono text-sm" placeholder="1685328000">
+                                <button onclick="pasteTimestamp()" class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-400 hover:text-gray-600">
+                                    <i class="fa-regular fa-clipboard"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <button onclick="convertTimestamp()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2">
+                            转换为日期 <i class="fa-solid fa-arrow-down text-xs"></i>
+                        </button>
+
+                        <div id="tsResult" class="hidden bg-gray-50 rounded-lg p-4 space-y-3 border border-gray-100">
+                            <div>
+                                <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">GMT / UTC</div>
+                                <div id="resGmt" class="font-mono text-sm text-gray-900"></div>
+                            </div>
+                            <div>
+                                <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">本地时间</div>
+                                <div id="resLocal" class="font-mono text-sm text-gray-900"></div>
+                            </div>
+                            <div>
+                                <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5">相对时间</div>
+                                <div id="resRelative" class="font-mono text-sm text-gray-900"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Date to Timestamp -->
+                <div class="p-8">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-lg">
+                            <i class="fa-regular fa-calendar-check"></i>
+                        </div>
+                        <div>
+                            <h2 class="font-bold text-gray-900">日期转时间戳</h2>
+                            <p class="text-xs text-gray-500">将日期时间转换为整数</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-500 mb-1.5">选择日期和时间</label>
+                            <div class="flex gap-2">
+                                <input type="date" id="dateInput" class="block w-full rounded-lg border-gray-200 bg-gray-50 focus:bg-white focus:border-blue-500 focus:ring-blue-500 text-gray-900 py-2.5 px-3 text-sm">
+                                <input type="time" id="timeInput" step="1" class="block w-40 rounded-lg border-gray-200 bg-gray-50 focus:bg-white focus:border-blue-500 focus:ring-blue-500 text-gray-900 py-2.5 px-3 text-sm">
+                            </div>
+                            <div class="mt-2 flex gap-3 text-xs font-medium">
+                                <button onclick="setNow()" class="text-blue-600 hover:text-blue-800 hover:underline">现在</button>
+                                <span class="text-gray-300">|</span>
+                                <button onclick="setStartOfDay()" class="text-blue-600 hover:text-blue-800 hover:underline">今日开始</button>
+                                <span class="text-gray-300">|</span>
+                                <button onclick="setEndOfDay()" class="text-blue-600 hover:text-blue-800 hover:underline">今日结束</button>
+                            </div>
+                        </div>
+
+                        <button onclick="convertDate()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2">
+                            转换为时间戳 <i class="fa-solid fa-arrow-down text-xs"></i>
+                        </button>
+
+                        <div id="dateResult" class="hidden bg-gray-50 rounded-lg p-4 border border-gray-100 flex items-center justify-between">
+                            <div>
+                                <div class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">UNIX 时间戳</div>
+                                <div id="resTimestamp" class="text-xl font-bold text-gray-900 font-mono tracking-tight"></div>
+                                <div class="text-[10px] text-gray-400 mt-1">自 1970年1月1日 (UTC) 起的秒数</div>
+                            </div>
+                            <button onclick="copyTimestamp()" class="text-gray-400 hover:text-blue-600 transition-colors p-2">
+                                <i class="fa-regular fa-copy text-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Related Tools -->
+        <div>
+            <h3 class="text-lg font-bold text-gray-900 mb-6">相关工具</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <!-- Card 1 -->
+                <a href="url-parser-zh.html" class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all group">
+                    <div class="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-link"></i>
+                    </div>
+                    <h4 class="font-bold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">URL 解析器</h4>
+                    <p class="text-xs text-gray-500">解析和分析 URL。</p>
+                </a>
+
+                <!-- Card 2 -->
+                <a href="json-formatter-zh.html" class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all group">
+                    <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-file-code"></i>
+                    </div>
+                    <h4 class="font-bold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">JSON 格式化</h4>
+                    <p class="text-xs text-gray-500">美化压缩的 JSON 代码。</p>
+                </a>
+
+                <!-- Card 3 -->
+                <a href="base64-encoder-zh.html" class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all group">
+                    <div class="w-10 h-10 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-file-shield"></i>
+                    </div>
+                    <h4 class="font-bold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">Base64 编码</h4>
+                    <p class="text-xs text-gray-500">编码和解码 Base64。</p>
+                </a>
+
+            </div>
+        </div>
+
+        <!-- Tool Request Form -->
+        <div class="rounded-xl p-6 shadow-sm bg-gradient-to-br from-blue-600 to-indigo-700 text-white overflow-hidden relative mt-8">
+            <div class="relative z-10">
+                <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-lightbulb text-yellow-300"></i> 请求新工具
+                </h3>
+                <form id="toolRequestForm" class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-medium text-blue-100 mb-1">工具名称 *</label>
+                        <input type="text" name="toolName" required class="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-sm text-white placeholder-blue-200 focus:outline-none focus:bg-white/20 focus:border-white/40 transition-colors" placeholder="例如：SQL 格式化">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-blue-100 mb-1">描述 *</label>
+                        <textarea name="description" required rows="2" class="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-sm text-white placeholder-blue-200 focus:outline-none focus:bg-white/20 focus:border-white/40 transition-colors resize-none" placeholder="它应该做什么？"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-blue-100 mb-1">功能需求（可选）</label>
+                        <input type="text" name="features" class="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-sm text-white placeholder-blue-200 focus:outline-none focus:bg-white/20 focus:border-white/40 transition-colors" placeholder="具体要求...">
+                    </div>
+                    <button type="submit" class="w-full py-2 bg-white text-blue-600 font-bold rounded-lg shadow-sm hover:bg-blue-50 transition-colors text-sm mt-2">
+                        提交请求
+                    </button>
+                </form>
+                <div id="requestSuccess" class="hidden text-center py-8">
+                    <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl">🎉</div>
+                    <h4 class="font-bold text-lg">谢谢！</h4>
+                    <p class="text-blue-100 text-sm mt-1">我们已收到您的请求。</p>
+                    <button onclick="resetRequestForm()" class="text-xs text-white underline mt-4 hover:text-blue-100">提交另一个</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // --- Live Epoch Clock ---
+        function updateEpoch() {
+            const now = Math.floor(Date.now() / 1000);
+            document.getElementById('currentEpoch').innerText = now;
+        }
+        setInterval(updateEpoch, 1000);
+        updateEpoch(); // Initial call
+
+        // --- Timestamp to Date Logic ---
+        function convertTimestamp() {
+            const input = document.getElementById('tsInput').value.trim();
+            if (!input) return;
+
+            let ts = parseInt(input, 10);
+            
+            if (isNaN(ts)) {
+                alert('请输入有效的数字');
+                return;
+            }
+
+            const date = new Date(ts * 1000);
+
+            // GMT String
+            document.getElementById('resGmt').innerText = date.toUTCString();
+            
+            // Local String
+            document.getElementById('resLocal').innerText = date.toString().split('(')[0];
+
+            // Relative Time
+            document.getElementById('resRelative').innerText = getRelativeTime(ts);
+
+            document.getElementById('tsResult').classList.remove('hidden');
+        }
+
+        async function pasteTimestamp() {
+            try {
+                const text = await navigator.clipboard.readText();
+                if (!isNaN(parseInt(text))) {
+                    document.getElementById('tsInput').value = text.trim();
+                }
+            } catch (err) {
+                // Ignore
+            }
+        }
+
+        function getRelativeTime(ts) {
+            const now = Math.floor(Date.now() / 1000);
+            const diff = now - ts;
+            const rtf = new Intl.RelativeTimeFormat('zh', { numeric: 'auto' });
+
+            if (Math.abs(diff) < 60) return rtf.format(-diff, 'second');
+            if (Math.abs(diff) < 3600) return rtf.format(-Math.floor(diff / 60), 'minute');
+            if (Math.abs(diff) < 86400) return rtf.format(-Math.floor(diff / 3600), 'hour');
+            if (Math.abs(diff) < 2592000) return rtf.format(-Math.floor(diff / 86400), 'day');
+            if (Math.abs(diff) < 31536000) return rtf.format(-Math.floor(diff / 2592000), 'month');
+            return rtf.format(-Math.floor(diff / 31536000), 'year');
+        }
+
+        // --- Date to Timestamp Logic ---
+        function setNow() {
+            const now = new Date();
+            updateDateInputs(now);
+        }
+
+        function setStartOfDay() {
+            const now = new Date();
+            now.setHours(0, 0, 0, 0);
+            updateDateInputs(now);
+        }
+
+        function setEndOfDay() {
+            const now = new Date();
+            now.setHours(23, 59, 59, 999);
+            updateDateInputs(now);
+        }
+
+        function updateDateInputs(date) {
+            const yyyy = date.getFullYear();
+            const mm = String(date.getMonth() + 1).padStart(2, '0');
+            const dd = String(date.getDate()).padStart(2, '0');
+            document.getElementById('dateInput').value = `${yyyy}-${mm}-${dd}`;
+
+            const hh = String(date.getHours()).padStart(2, '0');
+            const min = String(date.getMinutes()).padStart(2, '0');
+            const ss = String(date.getSeconds()).padStart(2, '0');
+            document.getElementById('timeInput').value = `${hh}:${min}:${ss}`;
+        }
+
+        function convertDate() {
+            const dateVal = document.getElementById('dateInput').value;
+            const timeVal = document.getElementById('timeInput').value;
+
+            if (!dateVal) return;
+
+            const dateTimeString = `${dateVal}T${timeVal || '00:00:00'}`;
+            const date = new Date(dateTimeString);
+            const ts = Math.floor(date.getTime() / 1000);
+
+            if (isNaN(ts)) {
+                alert('无效日期');
+                return;
+            }
+
+            document.getElementById('resTimestamp').innerText = ts;
+            document.getElementById('dateResult').classList.remove('hidden');
+        }
+
+        function copyTimestamp() {
+            const ts = document.getElementById('resTimestamp').innerText;
+            if (ts) {
+                navigator.clipboard.writeText(ts);
+            }
+        }
+
+        // Initialize with default timestamp
+        document.getElementById('tsInput').value = Math.floor(Date.now() / 1000);
+        
+        // Tool Request Form Logic
+        const requestForm = document.getElementById('toolRequestForm');
+        const successMsg = document.getElementById('requestSuccess');
+
+        if (requestForm) {
+            requestForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const lastSubmit = localStorage.getItem('lastToolRequestTime');
+                if (lastSubmit && Date.now() - parseInt(lastSubmit) < 60000) {
+                    alert('请稍等一分钟后再提交。');
+                    return;
+                }
+
+                const formData = new FormData(requestForm);
+                const request = {
+                    toolName: formData.get('toolName'),
+                    description: formData.get('description'),
+                    features: formData.get('features'),
+                    date: new Date().toISOString()
+                };
+
+                const requests = JSON.parse(localStorage.getItem('toolRequests') || '[]');
+                requests.push(request);
+                localStorage.setItem('toolRequests', JSON.stringify(requests));
+                localStorage.setItem('lastToolRequestTime', Date.now().toString());
+
+                requestForm.classList.add('hidden');
+                successMsg.classList.remove('hidden');
+            });
+        }
+
+        function resetRequestForm() {
+            requestForm.reset();
+            requestForm.classList.remove('hidden');
+            successMsg.classList.add('hidden');
+        }
+
+        // Initialize date inputs
+        setNow();
+
+    </script>
+</body>
+</html>

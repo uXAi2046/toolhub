@@ -537,8 +537,17 @@
                 // Logo Container Background adjustment
                 let logoContainerClass = `w-10 h-10 rounded-full flex items-center justify-center shadow-sm ${tool.logoBg}`;
 
+                // Determine the link based on current language
+                let targetLink = tool.link;
+                if (targetLink && !targetLink.startsWith('http')) {
+                    // For internal links, add language suffix if Chinese
+                    if (currentLang === 'zh') {
+                        targetLink = targetLink.replace('.html', '-zh.html');
+                    }
+                }
+
                 return `
-                <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-shadow duration-300 flex flex-col h-full group cursor-pointer" onclick="${tool.link ? `window.location.href='${tool.link}'` : ''}">
+                <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_16px_rgba(0,0,0,0.08)] transition-shadow duration-300 flex flex-col h-full group cursor-pointer" onclick="${targetLink ? `window.location.href='${targetLink}'` : ''}">
                     <!-- Top Row: Icon & Info in one line -->
                     <div class="flex items-center gap-3 mb-3">
                         <!-- Icon -->
