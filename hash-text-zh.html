@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>哈希文本 - Tool Center</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F9FAFB; }
+    </style>
+</head>
+<body class="text-slate-900 antialiased min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-100 sticky top-0 z-50">
+        <div class="max-w-[1400px] mx-auto px-6 h-16 flex items-center">
+            <a href="index.html" class="flex items-center gap-3 cursor-pointer">
+                <div class="grid grid-cols-2 gap-0.5 w-6 h-6">
+                    <div class="bg-blue-600 rounded-[1px]"></div>
+                    <div class="bg-blue-600 rounded-[1px]"></div>
+                    <div class="bg-blue-600 rounded-[1px]"></div>
+                    <div class="bg-blue-600 rounded-[1px] opacity-50"></div>
+                </div>
+                <span class="font-bold text-lg tracking-tight text-gray-900">Tool Center</span>
+            </a>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-[1400px] mx-auto px-6 py-8 w-full">
+        <div class="mb-6 flex items-center text-sm text-gray-500">
+            <a href="index.html" class="hover:text-blue-600 transition-colors flex items-center gap-2">
+                <i class="fa-solid fa-house"></i> Home
+            </a>
+            <i class="fa-solid fa-chevron-right text-xs mx-3 text-gray-300"></i>
+            <span class="font-medium text-gray-900">哈希文本</span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div class="lg:col-span-8 space-y-6">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900 mb-3">哈希文本</h1>
+                    <p class="text-gray-500 leading-relaxed">使用 SHA1, SHA256, SHA512, RIPEMD160 等算法进行哈希。</p>
+                </div>
+
+                <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden p-6">
+                    
+    
+         <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Input</label>
+            <textarea id="input" class="w-full h-32 p-3 border border-gray-300 rounded-lg font-mono text-sm" placeholder="Paste content here..."></textarea>
+         </div>
+         
+    <div class="flex items-center justify-between bg-gray-50 p-3 rounded-lg border border-gray-100">
+        <div class="flex items-center gap-3">
+            <button onclick="process()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Process</button>
+        </div>
+    </div>
+    
+    <div class="mt-4">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Result</label>
+        <div class="relative">
+            <textarea id="output" readonly class="w-full h-32 p-3 bg-gray-50 border border-gray-300 rounded-lg font-mono text-sm" placeholder="Result will appear here..."></textarea>
+            <button onclick="copyResult()" class="absolute top-2 right-2 text-gray-400 hover:text-blue-600">
+                <i class="fa-regular fa-copy"></i>
+            </button>
+        </div>
+    </div>
+    
+    
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="lg:col-span-4 space-y-6">
+                <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+                    <h3 class="font-bold text-gray-900 mb-4">About</h3>
+                    <p class="text-sm text-gray-500 mb-6 leading-relaxed">
+                        使用 SHA1, SHA256, SHA512, RIPEMD160 等算法进行哈希。
+                    </p>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-500">Category</span>
+                        <span class="font-medium text-gray-900">Crypto & Security</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Toast
+        function showToast(message, type = 'success') {
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                container.className = 'fixed bottom-5 right-5 flex flex-col gap-3 z-50';
+                document.body.appendChild(container);
+            }
+            const toast = document.createElement('div');
+            const bgColor = type === 'success' ? 'bg-green-600' : 'bg-red-600';
+            toast.className = `${bgColor} text-white px-4 py-3 rounded-lg shadow-lg text-sm font-medium flex items-center gap-2 transform transition-all duration-300 translate-y-10 opacity-0`;
+            toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation'}"></i> ${message}`;
+            container.appendChild(toast);
+            requestAnimationFrame(() => toast.classList.remove('translate-y-10', 'opacity-0'));
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function copyResult() {
+            const output = document.getElementById('output');
+            if (!output || !output.value) return;
+            navigator.clipboard.writeText(output.value).then(() => showToast('Copied to clipboard'));
+        }
+
+        
+        function process() {
+            const input = document.getElementById('input').value;
+            if(!input) return;
+            
+            const alg = document.getElementById('option-select').value;
+            let result = '';
+            
+            if(alg === 'MD5') result = CryptoJS.MD5(input).toString();
+            else if(alg === 'SHA1') result = CryptoJS.SHA1(input).toString();
+            else if(alg === 'SHA256') result = CryptoJS.SHA256(input).toString();
+            else if(alg === 'SHA512') result = CryptoJS.SHA512(input).toString();
+            else if(alg === 'RIPEMD160') result = CryptoJS.RIPEMD160(input).toString();
+            
+            document.getElementById('output').value = result;
+        }
+    
+    </script>
+</body>
+</html>

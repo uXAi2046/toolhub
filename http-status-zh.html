@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTTP 状态码 - Tool Center</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F9FAFB; }
+    </style>
+</head>
+<body class="text-slate-900 antialiased min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-100 sticky top-0 z-50">
+        <div class="max-w-[1400px] mx-auto px-6 h-16 flex items-center">
+            <a href="index.html" class="flex items-center gap-3 cursor-pointer">
+                <div class="grid grid-cols-2 gap-0.5 w-6 h-6">
+                    <div class="bg-blue-600 rounded-[1px]"></div>
+                    <div class="bg-blue-600 rounded-[1px]"></div>
+                    <div class="bg-blue-600 rounded-[1px]"></div>
+                    <div class="bg-blue-600 rounded-[1px] opacity-50"></div>
+                </div>
+                <span class="font-bold text-lg tracking-tight text-gray-900">Tool Center</span>
+            </a>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-[1400px] mx-auto px-6 py-8 w-full">
+        <div class="mb-6 flex items-center text-sm text-gray-500">
+            <a href="index.html" class="hover:text-blue-600 transition-colors flex items-center gap-2">
+                <i class="fa-solid fa-house"></i> Home
+            </a>
+            <i class="fa-solid fa-chevron-right text-xs mx-3 text-gray-300"></i>
+            <span class="font-medium text-gray-900">HTTP 状态码</span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div class="lg:col-span-8 space-y-6">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900 mb-3">HTTP 状态码</h1>
+                    <p class="text-gray-500 leading-relaxed">查询 HTTP 状态码列表及其含义。</p>
+                </div>
+
+                <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden p-6">
+                    
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left text-gray-500">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3">Code</th>
+                        <th class="px-6 py-3">Status</th>
+                        <th class="px-6 py-3">Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="bg-white border-b"><td class="px-6 py-4 font-bold text-green-600">200</td><td class="px-6 py-4">OK</td><td class="px-6 py-4">Standard response for successful requests.</td></tr>
+                    <tr class="bg-white border-b"><td class="px-6 py-4 font-bold text-green-600">201</td><td class="px-6 py-4">Created</td><td class="px-6 py-4">Resource has been created.</td></tr>
+                    <tr class="bg-white border-b"><td class="px-6 py-4 font-bold text-blue-600">301</td><td class="px-6 py-4">Moved Permanently</td><td class="px-6 py-4">URL has changed permanently.</td></tr>
+                    <tr class="bg-white border-b"><td class="px-6 py-4 font-bold text-orange-600">400</td><td class="px-6 py-4">Bad Request</td><td class="px-6 py-4">Server cannot process request due to client error.</td></tr>
+                    <tr class="bg-white border-b"><td class="px-6 py-4 font-bold text-orange-600">401</td><td class="px-6 py-4">Unauthorized</td><td class="px-6 py-4">Authentication is required.</td></tr>
+                    <tr class="bg-white border-b"><td class="px-6 py-4 font-bold text-orange-600">403</td><td class="px-6 py-4">Forbidden</td><td class="px-6 py-4">Server refuses to authorize request.</td></tr>
+                    <tr class="bg-white border-b"><td class="px-6 py-4 font-bold text-orange-600">404</td><td class="px-6 py-4">Not Found</td><td class="px-6 py-4">Resource not found.</td></tr>
+                    <tr class="bg-white border-b"><td class="px-6 py-4 font-bold text-red-600">500</td><td class="px-6 py-4">Internal Server Error</td><td class="px-6 py-4">Generic server error.</td></tr>
+                    <tr class="bg-white border-b"><td class="px-6 py-4 font-bold text-red-600">502</td><td class="px-6 py-4">Bad Gateway</td><td class="px-6 py-4">Invalid response from upstream server.</td></tr>
+                </tbody>
+            </table>
+        </div>
+        
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="lg:col-span-4 space-y-6">
+                <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+                    <h3 class="font-bold text-gray-900 mb-4">About</h3>
+                    <p class="text-sm text-gray-500 mb-6 leading-relaxed">
+                        查询 HTTP 状态码列表及其含义。
+                    </p>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-500">Category</span>
+                        <span class="font-medium text-gray-900">Web & Network</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Toast
+        function showToast(message, type = 'success') {
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                container.className = 'fixed bottom-5 right-5 flex flex-col gap-3 z-50';
+                document.body.appendChild(container);
+            }
+            const toast = document.createElement('div');
+            const bgColor = type === 'success' ? 'bg-green-600' : 'bg-red-600';
+            toast.className = `${bgColor} text-white px-4 py-3 rounded-lg shadow-lg text-sm font-medium flex items-center gap-2 transform transition-all duration-300 translate-y-10 opacity-0`;
+            toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation'}"></i> ${message}`;
+            container.appendChild(toast);
+            requestAnimationFrame(() => toast.classList.remove('translate-y-10', 'opacity-0'));
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function copyResult() {
+            const output = document.getElementById('output');
+            if (!output || !output.value) return;
+            navigator.clipboard.writeText(output.value).then(() => showToast('Copied to clipboard'));
+        }
+
+        
+        // Static info, no logic needed for v1
+    
+    </script>
+</body>
+</html>
